@@ -1,0 +1,360 @@
+/* Web IRC Client Styles */
+.web-irc-client {
+    max-width: 1200px;
+    margin: 20px auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.irc-header {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.irc-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.irc-status-container {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.irc-status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    background-color: #ef4444;
+}
+
+#web-irc-container {
+    display: flex;
+    height: 500px;
+    max-height: 500px;
+    overflow: hidden;
+}
+
+.irc-sidebar {
+    width: 200px;
+    background: #f8fafc;
+    border-right: 1px solid #e2e8f0;
+    padding: 15px;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.irc-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    max-height: 500px;
+}
+
+.irc-tab-bar {
+    display: flex;
+    background: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+    min-height: 40px;
+    flex-shrink: 0;
+}
+
+.irc-messages {
+    flex: 1;
+    overflow-y: scroll;
+    padding: 15px;
+    background: white;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.4;
+    height: 350px;
+    max-height: 350px;
+    border: 1px solid #ddd;
+}
+
+.irc-input {
+    padding: 15px;
+    border-top: 1px solid #e2e8f0;
+    background: white;
+    flex-shrink: 0;
+}
+
+/* Sidebar styles */
+.sidebar-section {
+    margin-bottom: 20px;
+}
+
+.sidebar-section h4 {
+    margin: 0 0 10px 0;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #64748b;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-section p {
+    margin: 5px 0;
+    font-size: 13px;
+    color: #475569;
+    word-break: break-all;
+}
+
+#irc-users {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#irc-users li {
+    padding: 6px 8px;
+    margin: 2px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #374151;
+    transition: background-color 0.2s;
+}
+
+#irc-users li:hover {
+    background-color: #e5e7eb;
+}
+
+/* Tab styles */
+.irc-tab {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-right: 1px solid #ccc;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.irc-tab:hover {
+    background: #e0e0e0;
+}
+
+.irc-tab.active {
+    background: white;
+    border-bottom: 1px solid white;
+}
+
+.irc-tab.has-unread {
+    font-weight: bold;
+}
+
+.unread-badge {
+    background: #ef4444;
+    color: white;
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 11px;
+    margin-left: 8px;
+    font-weight: normal;
+}
+
+.close-btn {
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #666;
+    font-size: 16px;
+}
+
+.close-btn:hover {
+    color: #ef4444;
+}
+
+/* Message styles */
+.irc-message {
+    margin-bottom: 4px;
+    padding: 2px 0;
+    word-wrap: break-word;
+}
+
+.irc-message.own {
+    color: #059669;
+}
+
+.irc-message.mention {
+    background-color: #fef3c7;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border-left: 3px solid #f59e0b;
+}
+
+.irc-message.system {
+    color: #6b7280;
+    font-style: italic;
+}
+
+.irc-message.action {
+    color: #7c3aed;
+    font-style: italic;
+}
+
+.irc-message .meta {
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.irc-message .nick {
+    font-weight: 600;
+    color: #2563eb;
+    cursor: pointer;
+}
+
+.irc-message .nick:hover {
+    text-decoration: underline;
+}
+
+/* Input styles */
+.irc-input-form {
+    display: flex;
+    gap: 10px;
+}
+
+#irc-input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#irc-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.irc-send-btn {
+    padding: 10px 20px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.irc-send-btn:hover {
+    background: #1d4ed8;
+}
+
+.irc-send-btn:active {
+    background: #1e40af;
+}
+
+/* Context menu */
+.user-context-menu {
+    position: fixed;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    min-width: 150px;
+    font-family: inherit;
+}
+
+.user-context-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+}
+
+.user-context-menu li {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #374151;
+    transition: background-color 0.2s;
+}
+
+.user-context-menu li:hover {
+    background-color: #2563eb;
+    color: white;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    #web-irc-container {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .irc-sidebar {
+        width: 100%;
+        max-height: 150px;
+        order: 1;
+    }
+    
+    .irc-main {
+        order: 2;
+        height: 400px;
+    }
+    
+    #irc-users {
+        max-height: 100px;
+    }
+}
+
+/* Scrollbar styling */
+.irc-messages::-webkit-scrollbar,
+#irc-users::-webkit-scrollbar {
+    width: 6px;
+}
+
+.irc-messages::-webkit-scrollbar-track,
+#irc-users::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.irc-messages::-webkit-scrollbar-thumb,
+#irc-users::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.irc-messages::-webkit-scrollbar-thumb:hover,
+#irc-users::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Animation for new messages */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.irc-message {
+    animation: slideIn 0.2s ease-out;
+}
+
