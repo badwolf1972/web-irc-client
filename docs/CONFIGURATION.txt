@@ -1,0 +1,254 @@
+CONFIGURATION GUIDE
+===================
+
+This guide covers all configuration options for the Web IRC Client plugin.
+
+ADMIN PANEL CONFIGURATION
+==========================
+
+Access the configuration panel at Settings > Web IRC Client in your WordPress admin.
+
+REQUIRED SETTINGS
+=================
+
+WebSocket URL:
+- Field: web_irc_ws_url
+- Required: Yes
+- Format: wss://hostname:port or ws://hostname:port
+- Examples:
+  - wss://irc.example.com:7443 (secure)
+  - ws://irc.example.com:7000 (insecure)
+- Notes: 
+  - Use wss:// for production (secure)
+  - Use ws:// only for local development
+  - Port depends on your IRC server configuration
+
+Default Channel:
+- Field: web_irc_channel
+- Required: Yes
+- Format: #channelname or channelname
+- Examples: #support, #general, support
+- Notes: 
+  - # prefix is automatically added if missing
+  - Channel must exist on your IRC server
+  - Users will automatically join this channel
+
+OPTIONAL SETTINGS
+=================
+
+Nickname Prefix:
+- Field: web_irc_nickname_prefix
+- Default: supportguest
+- Format: Alphanumeric characters, underscores, hyphens
+- Examples: guest, visitor, user
+- Notes: Random numbers are appended (e.g., supportguest1234)
+
+Real Name:
+- Field: web_irc_realname
+- Default: Web IRC User
+- Format: Any text string
+- Examples: Website Visitor, Support User
+- Notes: Displayed in IRC user info
+
+Theme:
+- Field: web_irc_theme
+- Default: light
+- Options: light, dark
+- Notes: Can be overridden per shortcode
+
+Auto Connect:
+- Field: web_irc_autoconnect
+- Default: yes
+- Options: yes, no
+- Notes: Whether to automatically connect when page loads
+
+SHORTCODE CONFIGURATION
+=======================
+
+Basic Usage:
+[web_irc_client]
+
+Advanced Usage:
+[web_irc_client theme="dark" width="100%" height="500px"]
+
+Shortcode Attributes:
+
+theme:
+- Values: light, dark
+- Default: Uses admin setting
+- Example: theme="dark"
+
+width:
+- Values: Any CSS width value
+- Default: 100%
+- Examples: width="800px", width="90%"
+
+height:
+- Values: Any CSS height value
+- Default: 70vh
+- Examples: height="500px", height="80vh"
+
+IRC SERVER CONFIGURATION
+=========================
+
+UnrealIRCd Setup (Recommended):
+
+WebSocket Module - Add to your unrealircd.conf:
+
+loadmodule "websocket";
+
+listen {
+    ip *;
+    port 7443;
+    options { websocket; ssl; };
+};
+
+SSL Configuration (Recommended):
+
+ssl {
+    certificate "/path/to/your/certificate.pem";
+    key "/path/to/your/private.key";
+    trusted-ca-file "/path/to/ca-bundle.crt";
+};
+
+CORS Headers (if needed):
+
+set {
+    websocket {
+        forward-ip-header "X-Forwarded-For";
+        forward-host-header "X-Forwarded-Host";
+    };
+};
+
+Other IRC Servers:
+
+TheLounge:
+- Enable WebSocket support in configuration
+- Set appropriate CORS headers
+- Configure SSL certificates
+
+Custom WebSocket Bridge:
+- Implement WebSocket-to-IRC protocol bridge
+- Handle IRC message parsing and formatting
+- Manage connection state and reconnection
+
+SECURITY CONFIGURATION
+=======================
+
+SSL/TLS Setup:
+- Always use WSS (WebSocket Secure) in production
+- Configure valid SSL certificates
+- Avoid self-signed certificates for public sites
+
+CORS Configuration:
+If your IRC server is on a different domain:
+
+Access-Control-Allow-Origin: https://yourwordpresssite.com
+Access-Control-Allow-Methods: GET, POST, OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization
+
+Firewall Rules:
+- Allow WebSocket connections on your IRC port
+- Restrict access to authorized domains if needed
+- Monitor for unusual connection patterns
+
+ADVANCED CONFIGURATION
+=======================
+
+Custom CSS:
+Override default styles by adding to your theme's CSS:
+
+/* Light theme customization */
+.theme-light #web-irc-container {
+    --primary-color: #your-color;
+    --background-color: #your-bg;
+}
+
+/* Dark theme customization */
+.theme-dark #web-irc-container {
+    --primary-color: #your-color;
+    --background-color: #your-bg;
+}
+
+JavaScript Customization:
+Access configuration in JavaScript:
+
+// Configuration is available in WEB_IRC_CLIENT_CFG object
+console.log(WEB_IRC_CLIENT_CFG.ws_url);
+console.log(WEB_IRC_CLIENT_CFG.channel);
+
+Database Options:
+Direct database access (advanced users only):
+
+-- View current settings
+SELECT * FROM wp_options WHERE option_name LIKE 'web_irc_%';
+
+-- Update setting (example)
+UPDATE wp_options SET option_value = 'wss://new-server.com:7443' 
+WHERE option_name = 'web_irc_ws_url';
+
+ENVIRONMENT-SPECIFIC CONFIGURATION
+===================================
+
+Development Environment:
+WebSocket URL: ws://localhost:7000
+Channel: #dev-test
+Auto Connect: No
+Theme: Light
+
+Staging Environment:
+WebSocket URL: wss://staging-irc.example.com:7443
+Channel: #staging-support
+Auto Connect: Yes
+Theme: Light
+
+Production Environment:
+WebSocket URL: wss://irc.example.com:7443
+Channel: #support
+Auto Connect: Yes
+Theme: Light (or user preference)
+
+VALIDATION RULES
+================
+
+WebSocket URL Validation:
+- Must start with ws:// or wss://
+- Must include valid hostname
+- Port number is optional
+- Path is optional
+
+Channel Name Validation:
+- Cannot be empty
+- Automatically prefixed with # if missing
+- Only allows: letters, numbers, underscores, hyphens
+- Invalid characters are stripped
+
+Nickname Validation:
+- Only allows: letters, numbers, underscores, hyphens
+- Invalid characters are stripped
+- Empty values use default
+
+CONFIGURATION BACKUP
+=====================
+
+Export Settings:
+
+// Get all plugin settings
+$settings = array(
+    'ws_url' => get_option('web_irc_ws_url'),
+    'channel' => get_option('web_irc_channel'),
+    'nickname_prefix' => get_option('web_irc_nickname_prefix'),
+    'realname' => get_option('web_irc_realname'),
+    'theme' => get_option('web_irc_theme'),
+    'autoconnect' => get_option('web_irc_autoconnect')
+);
+
+Import Settings:
+
+// Restore plugin settings
+update_option('web_irc_ws_url', $settings['ws_url']);
+update_option('web_irc_channel', $settings['channel']);
+// ... etc
+
+For troubleshooting configuration issues, see TROUBLESHOOTING.txt.
+

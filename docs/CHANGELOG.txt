@@ -1,0 +1,100 @@
+CHANGELOG
+=========
+
+All notable changes to the Web IRC Client plugin are documented in this file.
+
+Version 5.1 - December 2024
+---------------------------
+Type: Bug Fix & Security Release
+
+SECURITY:
+- Removed hardcoded #oo3dmodels channel references for security
+- Enhanced input validation and sanitization
+
+ADDED:
+- Channel validation prevents saving empty channels
+- Clear error messages when channel is not configured
+- Better user guidance for initial plugin setup
+
+CHANGED:
+- Plugin now requires users to configure their own channels
+- All default values changed from hardcoded to empty strings
+- JavaScript validation prevents connection without proper channel setup
+
+FIXED:
+- Configuration now properly validates required fields
+- Eliminated accidental connections to developer's channel
+
+Version 5.0 - December 2024
+---------------------------
+Type: Major Release - Complete Rewrite
+
+ADDED:
+- MAJOR REWRITE: Complete rebuild of entire plugin
+- Modern WebSocket-based IRC client implementation
+- Real-time chat with live message updates
+- Private messaging system with dedicated tabs
+- Multi-tab interface for channels and private messages
+- Tab close buttons for better user experience
+- User list with real-time online status
+- Desktop notifications for mentions and private messages
+- Modern responsive UI with light/dark theme support
+- Comprehensive IRC command support (/nick, /join, /part, /msg, /me, etc.)
+- Auto-reconnection with configurable retry attempts
+- Message history and scrollback functionality
+- WordPress shortcode integration [web_irc_client]
+- Complete admin panel for configuration
+- Translation ready with proper text domains
+- Mobile-friendly responsive design
+- Secure WebSocket connections (WSS support)
+- Plugin lifecycle management (activation/deactivation/uninstall)
+
+CHANGED:
+- Complete architectural overhaul from v1.x series
+- Modern JavaScript (ES6+) implementation
+- Improved security with proper WordPress hooks and sanitization
+- Enhanced error handling and user feedback
+- Optimized performance and reliability
+
+TECHNICAL IMPROVEMENTS:
+- Proper WordPress integration following best practices
+- Sanitized database operations
+- Secure input validation and output escaping
+- Modern CSS with theme system
+- Optimized asset loading
+
+Version 1.x - Early 2024
+------------------------
+Type: Initial Development
+
+ADDED:
+- Initial plugin development and basic IRC functionality
+- Foundation work and early iterations
+- Basic chat capabilities
+- Initial WordPress integration attempts
+
+CHANGED:
+- Various bug fixes and improvements throughout development
+- Multiple iterations leading to architectural decisions
+
+DEPRECATED:
+- Entire 1.x codebase replaced in v5.0 rewrite
+
+NOTES:
+- 1.x series served as learning experience and foundation
+- User feedback and technical limitations led to complete rewrite
+- No direct upgrade path from 1.x to 5.0 due to complete architectural change
+
+MIGRATION NOTES
+===============
+
+From v1.x to v5.0:
+- Breaking Change: Complete rewrite with no direct upgrade path
+- Action Required: Full reconfiguration needed
+- Benefits: Significantly enhanced functionality and reliability
+
+From v5.0 to v5.1:
+- Seamless Upgrade: Settings preserved during update
+- Action Required: Must configure channel settings (no defaults provided)
+- Compatibility: Fully backward compatible with v5.0 configurations
+

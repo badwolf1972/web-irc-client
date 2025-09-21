@@ -1,0 +1,163 @@
+INSTALLATION GUIDE
+==================
+
+This guide will walk you through installing and setting up the Web IRC Client plugin for WordPress.
+
+REQUIREMENTS
+============
+
+Server Requirements:
+- WordPress: 5.0 or higher
+- PHP: 7.4 or higher
+- HTTPS: Recommended for secure WebSocket connections (WSS)
+
+IRC Server Requirements:
+- WebSocket-compatible IRC server or WebSocket-to-IRC gateway
+- Recommended: UnrealIRCd with WebSocket support (tested and optimized)
+- Alternative: TheLounge, IRCCloud, or custom WebSocket bridges
+
+Browser Requirements:
+- Modern web browser with WebSocket support
+- JavaScript enabled
+- Notification API support (for desktop notifications)
+
+INSTALLATION METHODS
+====================
+
+Method 1: WordPress Admin Dashboard (Recommended)
+-------------------------------------------------
+
+1. Download the Plugin
+   - Download the web-irc-client-v5.1.tar.gz file
+   - Extract it to get the plugin folder
+
+2. Upload via WordPress Admin
+   - Log in to your WordPress admin dashboard
+   - Navigate to Plugins > Add New
+   - Click Upload Plugin
+   - Choose the plugin zip file
+   - Click Install Now
+   - Click Activate Plugin
+
+Method 2: Manual FTP Upload
+---------------------------
+
+1. Extract Plugin Files
+   tar -xzf web-irc-client-v5.1.tar.gz
+
+2. Upload via FTP
+   - Connect to your server via FTP
+   - Navigate to /wp-content/plugins/
+   - Upload the entire web-irc-client folder
+   - Ensure proper file permissions (755 for folders, 644 for files)
+
+3. Activate Plugin
+   - Go to WordPress admin Plugins page
+   - Find "Web IRC Client" and click Activate
+
+Method 3: WP-CLI Installation
+-----------------------------
+
+# Upload plugin files to plugins directory
+wp plugin install /path/to/web-irc-client-v5.1.tar.gz
+
+# Activate the plugin
+wp plugin activate web-irc-client
+
+POST-INSTALLATION SETUP
+========================
+
+1. Access Plugin Settings
+   - Go to Settings > Web IRC Client in WordPress admin
+   - You'll see the configuration panel
+
+2. Required Configuration
+   The plugin requires these settings before it will work:
+
+   WebSocket URL (Required):
+   - Enter your IRC WebSocket server URL
+   - Format: wss://your-irc-server.com:port or ws://your-irc-server.com:port
+   - Example: wss://irc.example.com:7443
+
+   Default Channel (Required):
+   - Enter the IRC channel users should join
+   - Format: #channelname (# is automatically added if missing)
+   - Example: #support or support
+
+   Optional Settings:
+   - Nickname Prefix: Prefix for auto-generated nicknames (default: supportguest)
+   - Real Name: Default real name for IRC users (default: Web IRC User)
+   - Theme: Choose light or dark theme
+   - Auto Connect: Whether to automatically connect when page loads
+
+3. Add to Your Site
+   Add the IRC client to any page or post using the shortcode:
+   [web_irc_client]
+
+VERIFICATION
+============
+
+Test the Installation:
+
+1. Check Plugin Status
+   - Ensure plugin is activated in Plugins page
+   - No error messages should appear
+
+2. Verify Configuration
+   - Go to Settings > Web IRC Client
+   - Confirm all required fields are filled
+   - Save settings
+
+3. Test Frontend
+   - Add [web_irc_client] to a test page
+   - Visit the page
+   - IRC client should load and attempt connection
+
+Troubleshooting Installation Issues:
+
+Plugin Won't Activate:
+- Check PHP version (requires 7.4+)
+- Verify file permissions
+- Check WordPress error logs
+
+Settings Won't Save:
+- Verify user has manage_options capability
+- Check for plugin conflicts
+- Ensure proper nonce verification
+
+Shortcode Doesn't Display:
+- Confirm plugin is activated
+- Check for theme conflicts
+- Verify shortcode spelling: [web_irc_client]
+
+FILE STRUCTURE
+==============
+
+After installation, your plugin directory should look like:
+
+wp-content/plugins/web-irc-client/
+├── assets/
+│   ├── web-irc.css
+│   └── web-irc.js
+├── docs/
+│   ├── CHANGELOG.txt
+│   ├── CONFIGURATION.txt
+│   ├── INSTALLATION.txt
+│   ├── TROUBLESHOOTING.txt
+│   └── VERSION-HISTORY.txt
+├── web-irc-client.php
+└── readme.txt
+
+NEXT STEPS
+==========
+
+After successful installation:
+
+1. Configure IRC Server: Set up your WebSocket-enabled IRC server
+2. Customize Appearance: Choose themes and adjust sizing
+3. Test Functionality: Verify chat, private messages, and notifications work
+4. User Training: Familiarize users with IRC commands and interface
+
+For detailed configuration instructions, see CONFIGURATION.txt.
+For troubleshooting help, see TROUBLESHOOTING.txt.
+

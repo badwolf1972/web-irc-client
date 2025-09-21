@@ -1,0 +1,304 @@
+TROUBLESHOOTING GUIDE
+=====================
+
+This guide helps you diagnose and fix common issues with the Web IRC Client plugin.
+
+COMMON ISSUES
+=============
+
+1. IRC Client Won't Connect
+---------------------------
+
+Symptoms:
+- Status shows "Not connected"
+- No error messages in chat
+- WebSocket connection fails
+
+Diagnosis Steps:
+
+1. Check WebSocket URL
+   - Verify URL format: wss://hostname:port
+   - Test URL in browser developer tools
+   - Confirm server is running
+
+2. Test WebSocket Connection
+   Open browser console and test:
+   
+   const ws = new WebSocket('wss://your-irc-server.com:7443');
+   ws.onopen = () => console.log('Connected');
+   ws.onerror = (error) => console.log('Error:', error);
+
+3. Check Browser Console
+   - Open Developer Tools (F12)
+   - Look for WebSocket errors
+   - Check for JavaScript errors
+
+Solutions:
+- Invalid URL: Correct the WebSocket URL in settings
+- Server Down: Restart your IRC server
+- SSL Issues: Verify SSL certificate validity
+- Firewall: Check firewall rules allow WebSocket connections
+- CORS Issues: Configure CORS headers on IRC server
+
+2. Channel Configuration Errors
+-------------------------------
+
+Symptoms:
+- Error: "Channel is required and cannot be empty"
+- Can't save settings
+- Wrong channel joined
+
+Solutions:
+
+1. Empty Channel
+   - Enter a channel name in admin settings
+   - Channel can be with or without # prefix
+
+2. Invalid Characters
+   - Use only letters, numbers, underscores, hyphens
+   - Avoid spaces and special characters
+
+3. Channel Doesn't Exist
+   - Create channel on IRC server first
+   - Or use existing channel name
+
+3. Shortcode Not Displaying
+---------------------------
+
+Symptoms:
+- Shortcode appears as text: [web_irc_client]
+- No IRC client interface visible
+- Blank space where client should be
+
+Diagnosis:
+
+1. Check Plugin Status
+   - Verify plugin is activated
+   - Check for plugin conflicts
+
+2. Verify Shortcode
+   - Correct spelling: [web_irc_client]
+   - No extra spaces or characters
+
+3. Theme Compatibility
+   - Switch to default theme temporarily
+   - Check if theme blocks shortcodes
+
+Solutions:
+- Plugin Inactive: Activate the plugin
+- Shortcode Typo: Use exact spelling [web_irc_client]
+- Theme Conflict: Contact theme developer or use different theme
+- Plugin Conflict: Deactivate other plugins to identify conflict
+
+4. JavaScript Errors
+--------------------
+
+Symptoms:
+- IRC client loads but doesn't function
+- Buttons don't work
+- Messages don't send
+
+Diagnosis:
+
+1. Browser Console Errors
+   Common errors:
+   - "WebSocket is not defined"
+   - "Cannot read property of undefined"
+   - "Permission denied"
+
+2. Check JavaScript Loading
+   - Verify web-irc.js loads in Network tab
+   - Check for 404 errors on assets
+
+Solutions:
+- Script Not Loading: Check file permissions and paths
+- JavaScript Disabled: Enable JavaScript in browser
+- Browser Compatibility: Use modern browser with WebSocket support
+- Plugin Conflict: Deactivate conflicting plugins
+
+5. SSL/HTTPS Issues
+-------------------
+
+Symptoms:
+- Mixed content warnings
+- WebSocket connection blocked
+- "Insecure connection" errors
+
+Solutions:
+
+1. Use WSS Protocol
+   - Change ws:// to wss:// in settings
+   - Ensure IRC server has valid SSL certificate
+
+2. HTTPS WordPress Site
+   - Ensure WordPress site uses HTTPS
+   - Mixed content (HTTP/HTTPS) causes issues
+
+3. Valid SSL Certificate
+   - Use proper SSL certificate on IRC server
+   - Avoid self-signed certificates in production
+
+6. Mobile/Responsive Issues
+---------------------------
+
+Symptoms:
+- Interface doesn't fit mobile screen
+- Touch interactions don't work
+- Text too small or large
+
+Solutions:
+
+1. Responsive Design
+   - Use percentage-based width: width="100%"
+   - Adjust height for mobile: height="50vh"
+
+2. Custom CSS
+   @media (max-width: 768px) {
+       #web-irc-container {
+           height: 400px !important;
+           font-size: 14px;
+       }
+   }
+
+7. Notification Issues
+----------------------
+
+Symptoms:
+- No desktop notifications
+- Notifications not working in browser
+
+Solutions:
+
+1. Browser Permissions
+   - Allow notifications when prompted
+   - Check browser notification settings
+
+2. HTTPS Required
+   - Notifications require HTTPS
+   - Ensure site uses SSL certificate
+
+3. Browser Support
+   - Use modern browser with Notification API
+   - Some browsers block notifications by default
+
+DEBUGGING TOOLS
+===============
+
+Enable Debug Mode:
+Add to WordPress wp-config.php:
+
+define('WP_DEBUG', true);
+define('WP_DEBUG_LOG', true);
+define('WP_DEBUG_DISPLAY', false);
+
+Browser Developer Tools:
+1. Console Tab: JavaScript errors and logs
+2. Network Tab: WebSocket connection status
+3. Application Tab: Local storage and session data
+
+IRC Server Logs:
+Check your IRC server logs for:
+- WebSocket connection attempts
+- Authentication failures
+- Channel join/part messages
+
+WordPress Debug Log:
+Check /wp-content/debug.log for:
+- PHP errors
+- Plugin conflicts
+- Database issues
+
+PERFORMANCE ISSUES
+==================
+
+Slow Loading:
+
+1. Optimize Assets
+   - Enable asset minification
+   - Use CDN for static files
+
+2. Reduce Reconnection Attempts
+   - Adjust reconnection settings
+   - Implement exponential backoff
+
+High Memory Usage:
+
+1. Message History Limit
+   - Limit stored message history
+   - Clear old messages periodically
+
+2. Connection Management
+   - Close unused connections
+   - Implement proper cleanup
+
+ADVANCED TROUBLESHOOTING
+========================
+
+Database Issues:
+
+-- Check plugin options
+SELECT * FROM wp_options WHERE option_name LIKE 'web_irc_%';
+
+-- Reset plugin settings
+DELETE FROM wp_options WHERE option_name LIKE 'web_irc_%';
+
+File Permission Issues:
+
+# Set correct permissions
+find /wp-content/plugins/web-irc-client -type f -exec chmod 644 {} \;
+find /wp-content/plugins/web-irc-client -type d -exec chmod 755 {} \;
+
+Plugin Conflicts:
+1. Deactivate All Plugins
+2. Activate Web IRC Client Only
+3. Test Functionality
+4. Reactivate Plugins One by One
+5. Identify Conflicting Plugin
+
+GETTING HELP
+=============
+
+Before Contacting Support:
+1. Check this troubleshooting guide
+2. Review configuration settings
+3. Test with default theme
+4. Disable other plugins temporarily
+5. Check browser console for errors
+
+Information to Include:
+When contacting support, provide:
+- WordPress version
+- Plugin version
+- PHP version
+- Browser and version
+- IRC server type (UnrealIRCd, etc.)
+- Error messages (exact text)
+- Steps to reproduce issue
+- Browser console errors
+
+Contact Information:
+- Email: mtaylor141273@gmail.com
+- Subject: Web IRC Client Support - [Brief Description]
+
+Self-Help Resources:
+- Plugin documentation in /docs/ folder
+- WordPress Codex for general WordPress issues
+- IRC server documentation for server-specific issues
+- Browser documentation for WebSocket support
+
+PREVENTION TIPS
+===============
+
+Regular Maintenance:
+1. Keep Plugin Updated
+2. Monitor Server Logs
+3. Test After WordPress Updates
+4. Backup Configuration Settings
+
+Best Practices:
+1. Use HTTPS/WSS in Production
+2. Monitor Resource Usage
+3. Implement Proper Error Handling
+4. Test on Multiple Browsers
+5. Document Custom Configurations
+
