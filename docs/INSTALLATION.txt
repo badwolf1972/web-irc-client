@@ -1,163 +1,673 @@
-INSTALLATION GUIDE
-==================
+=== Badwolf Web IRC Client - Installation Guide ===
 
-This guide will walk you through installing and setting up the Web IRC Client plugin for WordPress.
 
-REQUIREMENTS
-============
+Version: 5.2.0
+Last Updated: January 18, 2026
 
-Server Requirements:
-- WordPress: 5.0 or higher
-- PHP: 7.4 or higher
-- HTTPS: Recommended for secure WebSocket connections (WSS)
 
-IRC Server Requirements:
-- WebSocket-compatible IRC server or WebSocket-to-IRC gateway
-- Recommended: UnrealIRCd with WebSocket support (tested and optimized)
-- Alternative: TheLounge, IRCCloud, or custom WebSocket bridges
+=== Table of Contents ===
 
-Browser Requirements:
-- Modern web browser with WebSocket support
-- JavaScript enabled
-- Notification API support (for desktop notifications)
+1. Requirements
+2. WordPress Plugin Installation
+3. UnrealIRCd Server Setup
+4. SSL Certificate Installation
+5. Initial Configuration
+6. Testing Your Installation
+7. Post-Installation Steps
 
-INSTALLATION METHODS
-====================
 
-Method 1: WordPress Admin Dashboard (Recommended)
--------------------------------------------------
+================================================================================
+1. REQUIREMENTS
+================================================================================
 
-1. Download the Plugin
-   - Download the web-irc-client-v5.1.tar.gz file
-   - Extract it to get the plugin folder
 
-2. Upload via WordPress Admin
-   - Log in to your WordPress admin dashboard
-   - Navigate to Plugins > Add New
-   - Click Upload Plugin
-   - Choose the plugin zip file
-   - Click Install Now
-   - Click Activate Plugin
+--- WordPress Requirements ---
 
-Method 2: Manual FTP Upload
----------------------------
 
-1. Extract Plugin Files
-   tar -xzf web-irc-client-v5.1.tar.gz
+Minimum WordPress Version: 5.0
+Recommended WordPress Version: 6.9 or higher
+PHP Version: 7.4 or higher
+MySQL Version: 5.6 or higher
 
-2. Upload via FTP
-   - Connect to your server via FTP
-   - Navigate to /wp-content/plugins/
-   - Upload the entire web-irc-client folder
-   - Ensure proper file permissions (755 for folders, 644 for files)
 
-3. Activate Plugin
-   - Go to WordPress admin Plugins page
-   - Find "Web IRC Client" and click Activate
+--- Server Requirements ---
 
-Method 3: WP-CLI Installation
------------------------------
 
-# Upload plugin files to plugins directory
-wp plugin install /path/to/web-irc-client-v5.1.tar.gz
+IRC Server: UnrealIRCd 6.0.0 or higher (recommended)
+SSL Certificate: Valid SSL/TLS certificate (Let's Encrypt recommended)
+Open Ports: WebSocket port (e.g., 7443) must be accessible
+Operating System: Linux (Debian, Ubuntu, CentOS, RHEL)
 
-# Activate the plugin
-wp plugin activate web-irc-client
 
-POST-INSTALLATION SETUP
-========================
+--- Browser Requirements ---
 
-1. Access Plugin Settings
-   - Go to Settings > Web IRC Client in WordPress admin
-   - You'll see the configuration panel
 
-2. Required Configuration
-   The plugin requires these settings before it will work:
+Modern browsers with WebSocket support:
+• Chrome 16+
+• Firefox 11+
+• Safari 7+
+• Edge 12+
+• Opera 12.1+
 
-   WebSocket URL (Required):
-   - Enter your IRC WebSocket server URL
-   - Format: wss://your-irc-server.com:port or ws://your-irc-server.com:port
-   - Example: wss://irc.example.com:7443
 
-   Default Channel (Required):
-   - Enter the IRC channel users should join
-   - Format: #channelname (# is automatically added if missing)
-   - Example: #support or support
+================================================================================
+2. WORDPRESS PLUGIN INSTALLATION
+================================================================================
 
-   Optional Settings:
-   - Nickname Prefix: Prefix for auto-generated nicknames (default: supportguest)
-   - Real Name: Default real name for IRC users (default: Web IRC User)
-   - Theme: Choose light or dark theme
-   - Auto Connect: Whether to automatically connect when page loads
 
-3. Add to Your Site
-   Add the IRC client to any page or post using the shortcode:
-   [web_irc_client]
+--- Method 1: WordPress Admin (Recommended) ---
 
-VERIFICATION
-============
 
-Test the Installation:
+Step 1: Download the plugin
+• Download from WordPress.org or GitHub
+• Save the .zip file to your computer
 
-1. Check Plugin Status
-   - Ensure plugin is activated in Plugins page
-   - No error messages should appear
 
-2. Verify Configuration
-   - Go to Settings > Web IRC Client
-   - Confirm all required fields are filled
-   - Save settings
+Step 2: Upload via WordPress Admin
+• Log in to WordPress Admin
+• Navigate to Plugins → Add New
+• Click "Upload Plugin" button
+• Choose the downloaded .zip file
+• Click "Install Now"
 
-3. Test Frontend
-   - Add [web_irc_client] to a test page
-   - Visit the page
-   - IRC client should load and attempt connection
 
-Troubleshooting Installation Issues:
+Step 3: Activate the plugin
+• Click "Activate Plugin" after installation
+• Or go to Plugins → Installed Plugins
+• Find "Badwolf Web IRC Client"
+• Click "Activate"
 
-Plugin Won't Activate:
-- Check PHP version (requires 7.4+)
-- Verify file permissions
-- Check WordPress error logs
 
-Settings Won't Save:
-- Verify user has manage_options capability
-- Check for plugin conflicts
-- Ensure proper nonce verification
+--- Method 2: Manual Installation via FTP ---
 
-Shortcode Doesn't Display:
-- Confirm plugin is activated
-- Check for theme conflicts
-- Verify shortcode spelling: [web_irc_client]
 
-FILE STRUCTURE
-==============
+Step 1: Extract the plugin
+• Unzip the downloaded file
+• You should have a folder named "badwolf-web-irc-client"
 
-After installation, your plugin directory should look like:
 
-wp-content/plugins/web-irc-client/
-├── assets/
-│   ├── web-irc.css
-│   └── web-irc.js
-├── docs/
-│   ├── CHANGELOG.txt
-│   ├── CONFIGURATION.txt
-│   ├── INSTALLATION.txt
-│   ├── TROUBLESHOOTING.txt
-│   └── VERSION-HISTORY.txt
-├── web-irc-client.php
-└── readme.txt
+Step 2: Upload via FTP
+• Connect to your server via FTP
+• Navigate to /wp-content/plugins/
+• Upload the "badwolf-web-irc-client" folder
 
-NEXT STEPS
-==========
 
-After successful installation:
+Step 3: Set correct permissions
+• Files: 644
+• Directories: 755
 
-1. Configure IRC Server: Set up your WebSocket-enabled IRC server
-2. Customize Appearance: Choose themes and adjust sizing
-3. Test Functionality: Verify chat, private messages, and notifications work
-4. User Training: Familiarize users with IRC commands and interface
 
-For detailed configuration instructions, see CONFIGURATION.txt.
-For troubleshooting help, see TROUBLESHOOTING.txt.
+Step 4: Activate the plugin
+• Log in to WordPress Admin
+• Go to Plugins → Installed Plugins
+• Find "Badwolf Web IRC Client"
+• Click "Activate"
 
+
+--- Method 3: SSH/Command Line ---
+
+
+Step 1: Navigate to plugins directory
+  cd /var/www/html/wp-content/plugins/
+
+
+Step 2: Download and extract
+  wget https://github.com/badwolf1972/web-irc-client/archive/main.zip
+  unzip main.zip
+  mv web-irc-client-main badwolf-web-irc-client
+
+
+Step 3: Set permissions
+  chown -R www-data:www-data badwolf-web-irc-client
+  find badwolf-web-irc-client -type f -exec chmod 644 {} \;
+  find badwolf-web-irc-client -type d -exec chmod 755 {} \;
+
+
+Step 4: Activate via WordPress Admin or WP-CLI
+  wp plugin activate badwolf-web-irc-client
+
+
+--- Verify Installation ---
+
+
+After activation, you should see:
+• "Badwolf Web IRC Client" in Plugins list
+• "Settings" link under the plugin name
+• Settings → Badwolf Web IRC Client in admin menu
+
+
+================================================================================
+3. UNREALIRCD SERVER SETUP
+================================================================================
+
+
+--- Step 1: Install UnrealIRCd ---
+
+
+Download and install UnrealIRCd 6.x:
+
+
+Download latest version
+
+  cd /home
+  wget https://www.unrealircd.org/downloads/unrealircd-latest.tar.gz
+  tar xzf unrealircd-latest.tar.gz
+  cd unrealircd-6.x.x
+
+
+Configure and compile
+
+  ./Config
+  make
+  make install
+
+
+Follow the interactive configuration prompts.
+
+
+--- Step 2: Configure UnrealIRCd ---
+
+
+Edit the configuration file:
+
+
+  nano /home/unrealircd/unrealircd/conf/unrealircd.conf
+
+
+Add WebSocket module:
+
+
+  loadmodule "websocket";
+  loadmodule "webserver";
+
+
+Configure basic settings:
+
+
+  me {
+      name "irc.yourdomain.com";
+      info "Your IRC Server";
+      sid "001";
+  }
+
+
+  admin {
+      "Your Name";
+      "Your Nick";
+      "your@email.com";
+  }
+
+
+Add WebSocket listener (we'll add SSL later):
+
+
+  listen {
+      ip *;
+      port 7443;
+      options {
+          websocket;
+      }
+  }
+
+
+--- Step 3: Start UnrealIRCd ---
+
+
+  cd /home/unrealircd/unrealircd
+  ./unrealircd start
+
+
+--- Step 4: Verify UnrealIRCd is Running ---
+
+
+Check process
+
+  ps aux | grep unrealircd
+
+
+Check port
+
+  netstat -tlnp | grep 7443
+
+
+Check logs
+
+  tail -f /home/unrealircd/unrealircd/logs/ircd.log
+
+
+================================================================================
+4. SSL CERTIFICATE INSTALLATION
+================================================================================
+
+
+--- Step 1: Install Certbot ---
+
+
+Debian/Ubuntu:
+  sudo apt-get update
+  sudo apt-get install certbot
+
+
+CentOS/RHEL:
+  sudo yum install certbot
+
+
+--- Step 2: Stop Services Using Port 80 (if needed) ---
+
+
+  sudo systemctl stop apache2
+
+or
+
+  sudo systemctl stop nginx
+
+
+--- Step 3: Obtain Certificate ---
+
+
+  sudo certbot certonly --standalone -d irc.yourdomain.com
+
+
+Follow the prompts:
+• Enter your email address
+• Agree to Terms of Service
+• Choose whether to share email with EFF
+
+
+--- Step 4: Verify Certificate ---
+
+
+  sudo certbot certificates
+
+
+You should see:
+  Certificate Name: irc.yourdomain.com
+  Expiry Date: [date 90 days from now]
+  Certificate Path: /etc/letsencrypt/live/irc.yourdomain.com/fullchain.pem
+  Private Key Path: /etc/letsencrypt/live/irc.yourdomain.com/privkey.pem
+
+
+--- Step 5: Copy Certificates to UnrealIRCd ---
+
+
+Create TLS directory if it doesn't exist
+
+  mkdir -p /home/unrealircd/unrealircd/conf/tls
+
+
+Copy certificates
+
+  sudo cp /etc/letsencrypt/live/irc.yourdomain.com/fullchain.pem /home/unrealircd/unrealircd/conf/tls/
+  sudo cp /etc/letsencrypt/live/irc.yourdomain.com/privkey.pem /home/unrealircd/unrealircd/conf/tls/
+
+
+Set ownership
+
+  sudo chown unrealircd:unrealircd /home/unrealircd/unrealircd/conf/tls/*.pem
+
+
+Set permissions
+
+  sudo chmod 600 /home/unrealircd/unrealircd/conf/tls/privkey.pem
+  sudo chmod 644 /home/unrealircd/unrealircd/conf/tls/fullchain.pem
+
+
+--- Step 6: Update UnrealIRCd Configuration ---
+
+
+Edit unrealircd.conf:
+
+
+  nano /home/unrealircd/unrealircd/conf/unrealircd.conf
+
+
+Update the listen block:
+
+
+  listen {
+      ip *;
+      port 7443;
+      options {
+          tls;
+          websocket;
+      }
+      tls-options {
+          certificate "/home/unrealircd/unrealircd/conf/tls/fullchain.pem";
+          key "/home/unrealircd/unrealircd/conf/tls/privkey.pem";
+          options {
+              no-client-certificate;
+          }
+      }
+  }
+
+
+--- Step 7: Restart UnrealIRCd ---
+
+
+  cd /home/unrealircd/unrealircd
+  ./unrealircd restart
+
+
+--- Step 8: Verify SSL is Working ---
+
+
+Check logs for certificate warnings:
+
+
+  tail -50 /home/unrealircd/unrealircd/logs/ircd.log
+
+
+You should NOT see any certificate warnings.
+
+
+--- Step 9: Setup Auto-Renewal ---
+
+
+Create renewal hook:
+
+
+  sudo nano /etc/letsencrypt/renewal-hooks/deploy/copy-to-unrealircd.sh
+
+
+Add content:
+
+
+  #!/bin/bash
+  cp /etc/letsencrypt/live/irc.yourdomain.com/fullchain.pem /home/unrealircd/unrealircd/conf/tls/
+  cp /etc/letsencrypt/live/irc.yourdomain.com/privkey.pem /home/unrealircd/unrealircd/conf/tls/
+  chown unrealircd:unrealircd /home/unrealircd/unrealircd/conf/tls/*.pem
+  chmod 600 /home/unrealircd/unrealircd/conf/tls/privkey.pem
+  chmod 644 /home/unrealircd/unrealircd/conf/tls/fullchain.pem
+  /home/unrealircd/unrealircd/unrealircd rehash
+
+
+Make executable:
+
+
+  sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/copy-to-unrealircd.sh
+
+
+Test renewal:
+
+
+  sudo certbot renew --dry-run
+
+
+--- Step 10: Restart Web Server ---
+
+
+  sudo systemctl start apache2
+
+or
+
+  sudo systemctl start nginx
+
+
+================================================================================
+5. INITIAL CONFIGURATION
+================================================================================
+
+
+--- Step 1: Access Plugin Settings ---
+
+
+  WordPress Admin → Settings → Badwolf Web IRC Client
+
+
+--- Step 2: Configure WebSocket URL ---
+
+
+  WebSocket URL: wss://irc.yourdomain.com:7443
+
+
+  Important:
+• Use wss:// (not ws://)
+• Match the port to your UnrealIRCd listener
+• Use your actual domain name
+
+
+--- Step 3: Configure Default Channel ---
+
+
+  Default Channel: #general
+
+
+  Or any channel you want users to join automatically.
+
+
+--- Step 4: Configure Nickname Settings ---
+
+
+  Nickname Prefix: guest
+  Real Name: Web IRC User
+
+
+  Users will get nicknames like: guest1234, guest5678, etc.
+
+
+--- Step 5: Choose Theme ---
+
+
+  Theme: Light or Dark
+
+
+  This can be overridden per shortcode.
+
+
+--- Step 6: Set Auto Connect ---
+
+
+  Auto Connect: Yes
+
+
+  Recommended for better user experience.
+
+
+--- Step 7: Save Settings ---
+
+
+  Click "Save Changes" button
+
+
+================================================================================
+6. TESTING YOUR INSTALLATION
+================================================================================
+
+
+--- Step 1: Create Test Page ---
+
+
+  WordPress Admin → Pages → Add New
+  Title: IRC Chat
+  Content: [web_irc_client]
+  Publish the page
+
+
+--- Step 2: Visit the Page ---
+
+
+  Open the page in your browser
+  You should see the IRC client interface
+
+
+--- Step 3: Check Connection Status ---
+
+
+  Look at the status indicator:
+• "Connecting..." - Initial connection attempt
+• "Connected - Logging in..." - WebSocket connected
+• "Connected to #channel" - Successfully connected
+
+
+--- Step 4: Test Basic Functionality ---
+
+1. Check if you can see the channel name
+2. Check if users list appears
+3. Try sending a message
+4. Try IRC commands: /nick testnick
+
+
+--- Step 5: Test from Different Browser ---
+
+
+  Open the page in a different browser or incognito mode
+  Verify both users can see each other and chat
+
+
+--- Step 6: Check Browser Console ---
+
+
+  Press F12 to open Developer Tools
+  Go to Console tab
+  Look for any errors (should see connection logs)
+
+
+--- Step 7: Test WebSocket Connection ---
+
+
+  Use online WebSocket tester:
+  https://www.piesocket.com/websocket-tester
+
+
+  URL: wss://irc.yourdomain.com:7443
+  Click Connect
+  Should show "Connection Established"
+
+
+================================================================================
+7. POST-INSTALLATION STEPS
+================================================================================
+
+
+--- Configure Firewall ---
+
+
+UFW
+
+  sudo ufw allow 7443/tcp
+  sudo ufw reload
+
+
+iptables
+
+  sudo iptables -A INPUT -p tcp --dport 7443 -j ACCEPT
+  sudo iptables-save
+
+
+--- Setup Monitoring ---
+
+
+  Create a monitoring script to check if UnrealIRCd is running:
+
+
+  nano /usr/local/bin/check-unrealircd.sh
+
+
+  Add:
+
+
+  #!/bin/bash
+  if ! pgrep -x "unrealircd" > /dev/null; then
+      echo "UnrealIRCd is not running. Starting..."
+      cd /home/unrealircd/unrealircd
+      ./unrealircd start
+  fi
+
+
+  Make executable:
+
+
+  chmod +x /usr/local/bin/check-unrealircd.sh
+
+
+  Add to crontab:
+
+
+  crontab -e
+
+
+  Add line:
+
+
+  */5 * * * * /usr/local/bin/check-unrealircd.sh
+
+
+--- Setup Log Rotation ---
+
+
+  Create logrotate config:
+
+
+  sudo nano /etc/logrotate.d/unrealircd
+
+
+  Add:
+
+
+  /home/unrealircd/unrealircd/logs/*.log {
+      daily
+      rotate 7
+      compress
+      delaycompress
+      missingok
+      notifempty
+      postrotate
+          /home/unrealircd/unrealircd/unrealircd rehash
+      endscript
+  }
+
+
+--- Create Backup Script ---
+
+
+  Backup UnrealIRCd configuration:
+
+
+  nano /usr/local/bin/backup-unrealircd.sh
+
+
+  Add:
+
+
+  #!/bin/bash
+  BACKUP_DIR="/backup/unrealircd"
+  DATE=$(date +%Y%m%d)
+  mkdir -p $BACKUP_DIR
+  tar -czf $BACKUP_DIR/unrealircd-conf-$DATE.tar.gz /home/unrealircd/unrealircd/conf/
+
+
+  Make executable:
+
+
+  chmod +x /usr/local/bin/backup-unrealircd.sh
+
+
+--- Document Your Setup ---
+
+
+  Create a local documentation file with:
+• Your specific configuration
+• Custom settings
+• Firewall rules
+• Any modifications made
+
+
+--- Join Support Channels ---
+
+• UnrealIRCd Support: irc.unrealircd.org #unreal-support
+• WordPress Support: https://wordpress.org/support/plugin/badwolf-web-irc-client/
+
+
+================================================================================
+
+
+Congratulations! Your Badwolf Web IRC Client is now installed and configured.
+
+
+For troubleshooting, see TROUBLESHOOTING.txt
+For advanced configuration, see CONFIGURATION.txt
+
+
+Support:
+• GitHub: https://github.com/badwolf1972/web-irc-client
+• WordPress: https://wordpress.org/support/plugin/badwolf-web-irc-client/

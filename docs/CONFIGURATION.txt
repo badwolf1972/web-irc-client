@@ -1,254 +1,453 @@
-CONFIGURATION GUIDE
-===================
+=== Badwolf Web IRC Client - Configuration Guide ===
 
-This guide covers all configuration options for the Web IRC Client plugin.
 
-ADMIN PANEL CONFIGURATION
-==========================
+Version: 5.2.0
+Last Updated: January 18, 2026
 
-Access the configuration panel at Settings > Web IRC Client in your WordPress admin.
 
-REQUIRED SETTINGS
-=================
+=== Table of Contents ===
+
+1. WordPress Plugin Configuration
+2. UnrealIRCd Server Configuration
+3. SSL/TLS Certificate Setup
+4. Advanced Configuration Options
+5. Security Considerations
+
+
+================================================================================
+1. WORDPRESS PLUGIN CONFIGURATION
+================================================================================
+
+
+After activating the plugin, navigate to:
+WordPress Admin → Settings → Badwolf Web IRC Client
+
+
+--- Required Settings ---
+
 
 WebSocket URL:
-- Field: web_irc_ws_url
-- Required: Yes
-- Format: wss://hostname:port or ws://hostname:port
-- Examples:
-  - wss://irc.example.com:7443 (secure)
-  - ws://irc.example.com:7000 (insecure)
-- Notes: 
-  - Use wss:// for production (secure)
-  - Use ws:// only for local development
-  - Port depends on your IRC server configuration
+• Format: wss://irc.yourdomain.com:7443
+• Must use wss:// (secure WebSocket) for production
+• Port must match your UnrealIRCd WebSocket listener
+• Example: wss://irc.example.com:7443
+
 
 Default Channel:
-- Field: web_irc_channel
-- Required: Yes
-- Format: #channelname or channelname
-- Examples: #support, #general, support
-- Notes: 
-  - # prefix is automatically added if missing
-  - Channel must exist on your IRC server
-  - Users will automatically join this channel
+• IRC channel users will join automatically
+• Can include or omit the # symbol
+• Example: #general or general
+• Must be a valid IRC channel name
 
-OPTIONAL SETTINGS
-=================
+
+--- Optional Settings ---
+
 
 Nickname Prefix:
-- Field: web_irc_nickname_prefix
-- Default: supportguest
-- Format: Alphanumeric characters, underscores, hyphens
-- Examples: guest, visitor, user
-- Notes: Random numbers are appended (e.g., supportguest1234)
+• Prefix for auto-generated nicknames
+• Random numbers will be appended
+• Example: guest → guest1234
+• Default: supportguest
+
 
 Real Name:
-- Field: web_irc_realname
-- Default: Web IRC User
-- Format: Any text string
-- Examples: Website Visitor, Support User
-- Notes: Displayed in IRC user info
+• Default real name shown in IRC
+• Visible in /WHOIS queries
+• Example: Web IRC User
+• Default: Web IRC User
+
 
 Theme:
-- Field: web_irc_theme
-- Default: light
-- Options: light, dark
-- Notes: Can be overridden per shortcode
+• Light or Dark theme
+• Can be overridden per shortcode
+• Default: light
+
 
 Auto Connect:
-- Field: web_irc_autoconnect
-- Default: yes
-- Options: yes, no
-- Notes: Whether to automatically connect when page loads
+• Yes: Connect automatically when page loads
+• No: User must click to connect
+• Default: Yes
 
-SHORTCODE CONFIGURATION
-=======================
 
-Basic Usage:
-[web_irc_client]
+--- Shortcode Usage ---
 
-Advanced Usage:
-[web_irc_client theme="dark" width="100%" height="500px"]
 
-Shortcode Attributes:
+Basic shortcode:
+  [web_irc_client]
 
-theme:
-- Values: light, dark
-- Default: Uses admin setting
-- Example: theme="dark"
 
-width:
-- Values: Any CSS width value
-- Default: 100%
-- Examples: width="800px", width="90%"
+With custom attributes:
+  [web_irc_client theme="dark" width="100%" height="600px"]
 
-height:
-- Values: Any CSS height value
-- Default: 70vh
-- Examples: height="500px", height="80vh"
 
-IRC SERVER CONFIGURATION
-=========================
+Available attributes:
+• theme: "light" or "dark"
+• width: Any CSS width value (100%, 800px, etc.)
+• height: Any CSS height value (70vh, 500px, etc.)
 
-UnrealIRCd Setup (Recommended):
 
-WebSocket Module - Add to your unrealircd.conf:
+================================================================================
+2. UNREALIRCD SERVER CONFIGURATION
+================================================================================
 
-loadmodule "websocket";
 
-listen {
-    ip *;
-    port 7443;
-    options { websocket; ssl; };
-};
+--- Minimum Requirements ---
 
-SSL Configuration (Recommended):
 
-ssl {
-    certificate "/path/to/your/certificate.pem";
-    key "/path/to/your/private.key";
-    trusted-ca-file "/path/to/ca-bundle.crt";
-};
+UnrealIRCd Version: 6.0.0 or higher
+Modules Required: websocket, webserver
 
-CORS Headers (if needed):
 
-set {
-    websocket {
-        forward-ip-header "X-Forwarded-For";
-        forward-host-header "X-Forwarded-Host";
-    };
-};
+--- Load Required Modules ---
 
-Other IRC Servers:
 
-TheLounge:
-- Enable WebSocket support in configuration
-- Set appropriate CORS headers
-- Configure SSL certificates
+Add to your unrealircd.conf:
 
-Custom WebSocket Bridge:
-- Implement WebSocket-to-IRC protocol bridge
-- Handle IRC message parsing and formatting
-- Manage connection state and reconnection
 
-SECURITY CONFIGURATION
-=======================
+  loadmodule "websocket";
+  loadmodule "webserver";
 
-SSL/TLS Setup:
-- Always use WSS (WebSocket Secure) in production
-- Configure valid SSL certificates
-- Avoid self-signed certificates for public sites
 
-CORS Configuration:
-If your IRC server is on a different domain:
+--- WebSocket Listener Configuration ---
 
-Access-Control-Allow-Origin: https://yourwordpresssite.com
-Access-Control-Allow-Methods: GET, POST, OPTIONS
-Access-Control-Allow-Headers: Content-Type, Authorization
 
-Firewall Rules:
-- Allow WebSocket connections on your IRC port
-- Restrict access to authorized domains if needed
-- Monitor for unusual connection patterns
+Basic WebSocket with TLS (Recommended):
 
-ADVANCED CONFIGURATION
-=======================
 
-Custom CSS:
-Override default styles by adding to your theme's CSS:
+  listen {
+      ip *;
+      port 7443;
+      options {
+          tls;
+          websocket;
+      }
+      tls-options {
+          certificate "/path/to/fullchain.pem";
+          key "/path/to/privkey.pem";
+          options {
+              no-client-certificate;
+          }
+      }
+  }
 
-/* Light theme customization */
-.theme-light #web-irc-container {
-    --primary-color: #your-color;
-    --background-color: #your-bg;
-}
 
-/* Dark theme customization */
-.theme-dark #web-irc-container {
-    --primary-color: #your-color;
-    --background-color: #your-bg;
-}
+Multiple Ports Configuration:
 
-JavaScript Customization:
-Access configuration in JavaScript:
 
-// Configuration is available in WEB_IRC_CLIENT_CFG object
-console.log(WEB_IRC_CLIENT_CFG.ws_url);
-console.log(WEB_IRC_CLIENT_CFG.channel);
+Regular IRC with TLS
 
-Database Options:
-Direct database access (advanced users only):
+  listen {
+      ip *;
+      port 6697;
+      options { tls; }
+      tls-options {
+          certificate "/path/to/fullchain.pem";
+          key "/path/to/privkey.pem";
+      }
+  }
 
--- View current settings
-SELECT * FROM wp_options WHERE option_name LIKE 'web_irc_%';
 
--- Update setting (example)
-UPDATE wp_options SET option_value = 'wss://new-server.com:7443' 
-WHERE option_name = 'web_irc_ws_url';
+WebSocket with TLS
 
-ENVIRONMENT-SPECIFIC CONFIGURATION
-===================================
+  listen {
+      ip *;
+      port 7443;
+      options {
+          tls;
+          websocket;
+      }
+      tls-options {
+          certificate "/path/to/fullchain.pem";
+          key "/path/to/privkey.pem";
+          options {
+              no-client-certificate;
+          }
+      }
+  }
 
-Development Environment:
-WebSocket URL: ws://localhost:7000
-Channel: #dev-test
-Auto Connect: No
-Theme: Light
 
-Staging Environment:
-WebSocket URL: wss://staging-irc.example.com:7443
-Channel: #staging-support
-Auto Connect: Yes
-Theme: Light
+Plain IRC (not recommended for production)
 
-Production Environment:
-WebSocket URL: wss://irc.example.com:7443
-Channel: #support
-Auto Connect: Yes
-Theme: Light (or user preference)
+  listen {
+      ip *;
+      port 6667;
+  }
 
-VALIDATION RULES
-================
 
-WebSocket URL Validation:
-- Must start with ws:// or wss://
-- Must include valid hostname
-- Port number is optional
-- Path is optional
+--- Important Notes ---
 
-Channel Name Validation:
-- Cannot be empty
-- Automatically prefixed with # if missing
-- Only allows: letters, numbers, underscores, hyphens
-- Invalid characters are stripped
+1. Always use TLS (wss://) for production environments
+2. Certificate paths must be absolute paths
+3. UnrealIRCd user must have read access to certificate files
+4. After config changes, restart UnrealIRCd (not just rehash)
 
-Nickname Validation:
-- Only allows: letters, numbers, underscores, hyphens
-- Invalid characters are stripped
-- Empty values use default
 
-CONFIGURATION BACKUP
-=====================
+--- Restart UnrealIRCd ---
 
-Export Settings:
 
-// Get all plugin settings
-$settings = array(
-    'ws_url' => get_option('web_irc_ws_url'),
-    'channel' => get_option('web_irc_channel'),
-    'nickname_prefix' => get_option('web_irc_nickname_prefix'),
-    'realname' => get_option('web_irc_realname'),
-    'theme' => get_option('web_irc_theme'),
-    'autoconnect' => get_option('web_irc_autoconnect')
-);
+  cd /path/to/unrealircd
+  ./unrealircd restart
 
-Import Settings:
 
-// Restore plugin settings
-update_option('web_irc_ws_url', $settings['ws_url']);
-update_option('web_irc_channel', $settings['channel']);
-// ... etc
+--- Verify Configuration ---
 
-For troubleshooting configuration issues, see TROUBLESHOOTING.txt.
 
+Check if UnrealIRCd is running
+
+  ps aux | grep unrealircd
+
+
+Check if port is listening
+
+  sudo netstat -tlnp | grep 7443
+
+
+Check logs for errors
+
+  tail -f /path/to/unrealircd/logs/ircd.log
+
+
+================================================================================
+3. SSL/TLS CERTIFICATE SETUP
+================================================================================
+
+
+--- Using Let's Encrypt (Recommended) ---
+
+
+Step 1: Install Certbot
+
+
+Debian/Ubuntu
+
+  sudo apt-get update
+  sudo apt-get install certbot
+
+
+CentOS/RHEL
+
+  sudo yum install certbot
+
+
+Step 2: Obtain Certificate
+
+
+Standalone method (requires port 80 to be free)
+
+  sudo certbot certonly --standalone -d irc.yourdomain.com
+
+
+Webroot method (if you have a web server running)
+
+  sudo certbot certonly --webroot -w /var/www/html -d irc.yourdomain.com
+
+
+Step 3: Copy Certificates to UnrealIRCd
+
+
+  sudo cp /etc/letsencrypt/live/irc.yourdomain.com/fullchain.pem /path/to/unrealircd/conf/tls/
+  sudo cp /etc/letsencrypt/live/irc.yourdomain.com/privkey.pem /path/to/unrealircd/conf/tls/
+
+
+Step 4: Set Correct Permissions
+
+
+  sudo chown unrealircd:unrealircd /path/to/unrealircd/conf/tls/*.pem
+  sudo chmod 600 /path/to/unrealircd/conf/tls/privkey.pem
+  sudo chmod 644 /path/to/unrealircd/conf/tls/fullchain.pem
+
+
+Step 5: Restart UnrealIRCd
+
+
+  cd /path/to/unrealircd
+  ./unrealircd restart
+
+
+--- Auto-Renewal Setup ---
+
+
+Create renewal hook script:
+
+
+  sudo nano /etc/letsencrypt/renewal-hooks/deploy/copy-to-unrealircd.sh
+
+
+Add this content (adjust paths):
+
+
+  #!/bin/bash
+  cp /etc/letsencrypt/live/irc.yourdomain.com/fullchain.pem /path/to/unrealircd/conf/tls/
+  cp /etc/letsencrypt/live/irc.yourdomain.com/privkey.pem /path/to/unrealircd/conf/tls/
+  chown unrealircd:unrealircd /path/to/unrealircd/conf/tls/*.pem
+  chmod 600 /path/to/unrealircd/conf/tls/privkey.pem
+  chmod 644 /path/to/unrealircd/conf/tls/fullchain.pem
+  /path/to/unrealircd/unrealircd rehash
+
+
+Make it executable:
+
+
+  sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/copy-to-unrealircd.sh
+
+
+Test auto-renewal:
+
+
+  sudo certbot renew --dry-run
+
+
+--- Using Self-Signed Certificates (Testing Only) ---
+
+
+Generate self-signed certificate:
+
+
+  cd /path/to/unrealircd/conf/tls
+  openssl req -x509 -newkey rsa:4096 -keyout privkey.pem -out fullchain.pem -days 365 -nodes
+
+
+Note: Self-signed certificates will show browser warnings and are NOT recommended for production.
+
+
+================================================================================
+4. ADVANCED CONFIGURATION OPTIONS
+================================================================================
+
+
+--- Connection Limits ---
+
+
+In unrealircd.conf, adjust connection limits:
+
+
+  class clients {
+      pingfreq 90;
+      maxclients 1000;
+      sendq 200k;
+      recvq 8000;
+  }
+
+
+  allow {
+      mask *;
+      class clients;
+      maxperip 15;  # Max connections per IP
+  }
+
+
+--- Channel Configuration ---
+
+
+Set default channel modes:
+
+
+  set {
+      modes-on-join "+nt";  # No external messages, topic protection
+  }
+
+
+--- Anti-Flood Settings ---
+
+
+Configure flood protection:
+
+
+  set {
+      anti-flood {
+          connect-flood 3:60;  # 3 connections per 60 seconds
+      }
+  }
+
+
+--- WebSocket-Specific Settings ---
+
+
+If you need to adjust WebSocket behavior, check UnrealIRCd documentation:
+https://www.unrealircd.org/docs/WebSocket_support
+
+
+================================================================================
+5. SECURITY CONSIDERATIONS
+================================================================================
+
+
+--- Essential Security Measures ---
+
+1. ALWAYS use TLS (wss://) in production
+- Never use ws:// (unencrypted) for public-facing sites
+- Browsers may block non-secure WebSocket connections
+
+2. Use valid SSL certificates
+- Let's Encrypt provides free, trusted certificates
+- Self-signed certificates cause browser warnings
+
+3. Keep certificates up to date
+- Set up auto-renewal
+- Monitor certificate expiration
+
+4. Firewall Configuration
+- Only open necessary ports
+- Consider IP whitelisting for admin access
+
+5. Regular Updates
+- Keep UnrealIRCd updated
+- Keep WordPress and plugin updated
+- Monitor security advisories
+
+
+--- Firewall Rules ---
+
+
+Allow WebSocket port:
+
+
+UFW
+
+  sudo ufw allow 7443/tcp
+
+
+iptables
+
+  sudo iptables -A INPUT -p tcp --dport 7443 -j ACCEPT
+  sudo iptables-save
+
+
+--- Connection Rate Limiting ---
+
+
+Use UnrealIRCd's built-in connection throttling:
+
+
+  set {
+      connthrottle {
+          new-users {
+              local-throttle 20:60;
+              global-throttle 30:60;
+          }
+      }
+  }
+
+
+--- Monitoring ---
+
+
+Monitor UnrealIRCd logs regularly:
+
+
+  tail -f /path/to/unrealircd/logs/ircd.log
+
+
+Check for:
+• Failed connection attempts
+• Certificate warnings
+• Unusual activity patterns
+
+
+================================================================================
+
+
+For more information and support:
+• GitHub: https://github.com/badwolf1972/web-irc-client
+• UnrealIRCd Docs: https://www.unrealircd.org/docs/
+• WordPress Support: https://wordpress.org/support/plugin/badwolf-web-irc-client/

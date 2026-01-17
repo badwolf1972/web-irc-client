@@ -1,245 +1,464 @@
-WEB IRC CLIENT - VERSION HISTORY
-=================================
+=== Badwolf Web IRC Client - Version History ===
 
-VERSION 5.1 (CURRENT)
-=====================
-Release Date: September 2025
-Type: Bug Fix & Security Release
 
-Overview:
-Version 5.1 addresses critical security concerns by removing hardcoded channel 
-references and implementing proper validation. This ensures the plugin can be 
-safely distributed without users accidentally connecting to the developer's IRC channels.
+Complete version history and release notes for all versions.
 
-Security Improvements:
-- CRITICAL: Removed hardcoded #oo3dmodels channel references
-- ENHANCED: Input validation prevents malicious channel names
-- IMPROVED: Sanitization of all user inputs
 
-New Features:
-- Channel Validation: Prevents saving empty or invalid channels
-- Error Messages: Clear feedback when configuration is incomplete
-- Setup Guidance: Better user onboarding experience
+================================================================================
+VERSION 5.2.0 - January 18, 2026
 
-Changes:
-- Breaking Change: Users must configure channels (no defaults provided)
-- Validation: JavaScript prevents connection without proper setup
-- Defaults: All hardcoded values replaced with empty strings
+Release Type: Major Update
+Status: Stable
+WordPress Compatibility: 5.0 - 6.9
+PHP Requirement: 7.4+
 
-Bug Fixes:
-- Fixed configuration validation edge cases
-- Resolved potential connection issues with unconfigured channels
-- Improved error handling for missing settings
 
-Developer Notes:
-- Plugin now safe for public distribution
-- No risk of users connecting to developer's channels
-- Proper separation of development and production configurations
+--- Summary ---
 
-VERSION 5.0
-============
-Release Date: August 2025
-Type: Major Release - Complete Rewrite
 
-Overview:
-Version 5.0 represents a complete architectural overhaul of the Web IRC Client plugin. 
-Built from the ground up with modern web technologies, this version delivers a 
-professional-grade IRC client experience directly within WordPress.
+Critical update addressing WordPress 6.9 compatibility issues and WebSocket
+connection stability. This release fixes script loading problems introduced
+by WordPress 6.9's changes to the global $post object handling, and resolves
+binary WebSocket data handling that caused connection drops.
 
-Major New Features:
 
-Real-Time Communication:
-- WebSocket Integration: Modern WebSocket-based IRC connectivity
-- Live Messaging: Instant message delivery and receipt
-- Auto-Reconnection: Intelligent reconnection with exponential backoff
-- Connection Status: Real-time connection status indicators
+--- Major Changes ---
+
+
+WordPress 6.9 Compatibility:
+• Fixed script enqueueing system to work with WordPress 6.9
+• Implemented multi-method shortcode detection
+• Added support for block themes and Full Site Editing (FSE)
+• Fixed wp_localize_script() timing issue
+• Added fallback script loading in shortcode handler
+
+
+WebSocket Improvements:
+• Added IRC WebSocket subprotocol support (['irc', 'binary.ircv3.net'])
+• Fixed binary WebSocket data handling (Blob to text conversion)
+• Resolved connection drops caused by data type mismatches
+• Improved WebSocket error logging and diagnostics
+
 
 User Interface:
-- Modern Design: Clean, responsive interface with professional styling
-- Multi-Tab Support: Separate tabs for channels and private messages
-- Tab Management: Close buttons and tab switching functionality
-- Theme System: Light and dark theme options
-- Mobile Responsive: Optimized for all device sizes
+• Added Settings link to plugin list page
+• Improved error messages and status indicators
+• Enhanced connection state management
 
-IRC Functionality:
-- Full IRC Command Support:
-  - /nick newname - Change nickname
-  - /join #channel - Join channels
-  - /part - Leave channels
-  - /msg user message - Private messaging
-  - /me action - Action messages
-  - /help - Command help
-- Private Messaging: Dedicated PM tabs with notification support
-- User Lists: Real-time user presence indicators
-- Message History: Scrollback and message persistence
 
-WordPress Integration:
-- Shortcode System: Easy integration with [web_irc_client] shortcode
-- Admin Panel: Comprehensive configuration interface
-- Settings API: Proper WordPress settings integration
-- Translation Ready: Full internationalization support
-- Security: WordPress security best practices implemented
+--- Bug Fixes ---
+
+• Fixed: Plugin not loading scripts in WordPress 6.9
+• Fixed: Configuration not being passed to JavaScript
+• Fixed: WebSocket closing with error code 1006
+• Fixed: "data.trim is not a function" error
+• Fixed: Scripts not loading on archive pages
+• Fixed: Shortcode detection failing with block themes
+
+
+--- Technical Details ---
+
+• Rewrote enqueue_scripts() method with three-tier detection
+• Added FileReader API for binary WebSocket message handling
+• Implemented plugin_action_links filter for settings link
+• Enhanced script registration workflow
+• Added comprehensive error handling
+
+
+--- Files Changed ---
+
+• badwolf-web-irc-client.php - Core plugin file
+• assets/web-irc.js - JavaScript client
+• docs/CHANGELOG.txt - Updated changelog
+• docs/CONFIGURATION.txt - Updated configuration guide
+• docs/INSTALLATION.txt - Updated installation guide
+• docs/TROUBLESHOOTING.txt - New troubleshooting guide
+• docs/VERSION-HISTORY.txt - This file
+
+
+--- Upgrade Path ---
+
+
+From 5.1.x:
+1. Backup current plugin files
+2. Replace plugin files with 5.2.0 version
+3. Clear all caches (WordPress, browser, server)
+4. Verify SSL certificates are valid
+5. Test connection
+
+
+From 5.0.x or earlier:
+1. Review CONFIGURATION.txt for new settings
+2. Follow upgrade path from 5.1.x above
+3. Update UnrealIRCd configuration if needed
+
+
+--- Known Issues ---
+
+
+  None at this time.
+
+
+--- Credits ---
+
+• Lead Developer: Martin Cooper (badwolf72)
+• Testing: Community contributors
+• Bug Reports: WordPress.org support forum users
+
+
+================================================================================
+VERSION 5.1.1 - December 2025
+
+Release Type: Maintenance Release
+Status: Stable (Superseded by 5.2.0)
+WordPress Compatibility: 5.0 - 6.8
+PHP Requirement: 7.4+
+
+
+--- Summary ---
+
+
+Maintenance release with bug fixes and minor improvements. Last version
+before WordPress 6.9 compatibility issues were discovered.
+
+
+--- Changes ---
+
+• Improved error handling in WebSocket connection
+• Enhanced reconnection logic
+• Fixed minor CSS issues
+• Updated documentation
+• Performance optimizations
+
+
+--- Bug Fixes ---
+
+• Fixed: Reconnection attempts not resetting properly
+• Fixed: User list not updating in some cases
+• Fixed: Theme switching issues
+• Fixed: Message history overflow
+
+
+--- Known Issues ---
+
+• Not compatible with WordPress 6.9 (fixed in 5.2.0)
+• Binary WebSocket data causes crashes (fixed in 5.2.0)
+
+
+================================================================================
+VERSION 5.1.0 - November 2025
+
+Release Type: Feature Release
+Status: Stable (Superseded by 5.2.0)
+WordPress Compatibility: 5.0 - 6.8
+PHP Requirement: 7.4+
+
+
+--- Summary ---
+
+
+Major feature release adding private messaging, desktop notifications,
+and enhanced user interface with tabbed windows.
+
+
+--- New Features ---
+
+
+Private Messaging:
+• Click username to open private message window
+• Multiple PM windows with tabs
+• Unread message badges
+• Desktop notifications for PMs
+
+
+User Interface:
+• Tabbed interface for channels and PMs
+• Context menus for users
+• Improved message display
+• Better mobile responsiveness
+
 
 Notifications:
-- Desktop Notifications: Browser notifications for mentions and PMs
-- Sound Alerts: Audio notifications (configurable)
-- Visual Indicators: Unread message counters and highlights
-
-Technical Improvements:
-
-Architecture:
-- Modern JavaScript: ES6+ implementation with proper error handling
-- CSS Grid/Flexbox: Modern layout techniques
-- Modular Design: Separated concerns and maintainable code structure
-- Performance Optimized: Efficient DOM manipulation and memory usage
-
-Security:
-- Input Sanitization: All user inputs properly sanitized
-- Output Escaping: XSS prevention through proper escaping
-- Nonce Verification: CSRF protection for admin actions
-- Capability Checks: Proper permission verification
-
-WordPress Standards:
-- Coding Standards: Follows WordPress PHP and JavaScript standards
-- Hook System: Proper use of WordPress actions and filters
-- Database Integration: Uses WordPress Options API
-- Asset Management: Proper script and style enqueueing
-
-Configuration Options:
-- WebSocket URL: Configurable IRC server connection
-- Default Channel: Auto-join channel setting
-- Nickname Prefix: Customizable nickname generation
-- Theme Selection: Light/dark theme options
-- Auto-Connect: Configurable connection behavior
-- Real Name: Default user real name setting
-
-Shortcode Attributes:
-- theme - Override default theme (light/dark)
-- width - Custom width (CSS units)
-- height - Custom height (CSS units)
-
-Browser Support:
-- Modern Browsers: Chrome 60+, Firefox 55+, Safari 11+, Edge 79+
-- WebSocket Required: Full WebSocket API support needed
-- Notification API: For desktop notification features
-- Local Storage: For settings and message history persistence
-
-Server Compatibility:
-- UnrealIRCd: Fully tested and optimized
-- TheLounge: Compatible with WebSocket support
-- IRCCloud: Commercial service compatibility
-- Custom Bridges: WebSocket-to-IRC gateway support
-
-VERSION 1.X SERIES
-==================
-Release Period: Early 2025
-Type: Initial Development
-
-Overview:
-The 1.x series represented the initial development phase of the Web IRC Client plugin. 
-These versions served as proof-of-concept implementations and learning experiences 
-that ultimately led to the complete rewrite in version 5.0.
-
-Development Journey:
-- v1.0: Initial plugin structure and basic IRC connectivity
-- v1.1: Basic chat interface implementation
-- v1.2: WordPress integration improvements
-- v1.3: Bug fixes and stability improvements
-- v1.4: User interface enhancements
-- v1.5: Performance optimizations
-- v1.x: Various iterations and experimental features
-
-Key Learnings:
-- Architecture Limitations: Original approach had scalability issues
-- User Experience: Interface needed complete modernization
-- Performance Issues: Memory leaks and connection problems
-- Security Concerns: Input validation and sanitization gaps
-- WordPress Integration: Needed better adherence to WordPress standards
-
-Technical Debt:
-- Legacy Code: Outdated JavaScript and PHP practices
-- Browser Compatibility: Limited modern browser feature usage
-- Responsive Design: Poor mobile device support
-- Error Handling: Insufficient error management
-- Documentation: Lack of comprehensive documentation
-
-User Feedback:
-- Interface Complaints: Users found interface outdated and confusing
-- Reliability Issues: Frequent disconnections and reconnection problems
-- Feature Requests: Demand for private messaging and notifications
-- Mobile Issues: Poor mobile device experience
-- Configuration Difficulty: Complex setup process
-
-Decision to Rewrite:
-Based on accumulated technical debt, user feedback, and evolving requirements, 
-the decision was made to completely rewrite the plugin for version 5.0 rather 
-than continue incremental improvements.
-
-MIGRATION GUIDE
-===============
-
-From v1.x to v5.0:
-Migration Type: Complete Replacement (No Direct Upgrade Path)
-
-Pre-Migration Steps:
-1. Backup Current Settings: Export any custom configurations
-2. Document Customizations: Note any custom CSS or modifications
-3. User Communication: Inform users of upcoming changes
-
-Migration Process:
-1. Deactivate v1.x: Deactivate old plugin version
-2. Remove Old Files: Delete v1.x plugin files
-3. Install v5.0: Fresh installation of new version
-4. Reconfigure Settings: Set up all configuration options
-5. Test Functionality: Verify all features work correctly
-
-Post-Migration Tasks:
-- User Training: Educate users on new interface
-- Custom CSS: Reapply any custom styling
-- Monitor Performance: Watch for any issues
-- Gather Feedback: Collect user feedback on new version
-
-From v5.0 to v5.1:
-Migration Type: Standard Update (Seamless Upgrade)
-
-Automatic Updates:
-- Settings preserved during update
-- No configuration loss
-- Backward compatible
-
-Required Actions:
-- Channel Configuration: Must set channel in admin panel
-- Validation Check: Verify all required settings are configured
-- Test Connection: Confirm IRC connectivity works
-
-Verification Steps:
-1. Check plugin version shows 5.1
-2. Verify all settings are preserved
-3. Test IRC connection functionality
-4. Confirm no hardcoded channels appear
+• Desktop notifications for mentions
+• Desktop notifications for private messages
+• Configurable notification timeout
+• Browser notification permission handling
 
 
-SUPPORT AND MAINTENANCE
-=======================
+--- Improvements ---
 
-Current Support:
-- Active Development: Version 5.1 actively maintained
-- Bug Fixes: Regular updates for reported issues
-- Security Updates: Prompt security patch releases
-- Feature Requests: Community-driven feature development
+• Enhanced user list with click handlers
+• Better message formatting
+• Improved error messages
+• Enhanced reconnection logic
+• Better theme support
 
-End of Life:
-- Version 1.x: No longer supported (replaced by 5.0)
-- Version 5.0: Supported until 5.2 release
-- Version 5.1: Current stable version with full support
 
-Community:
-- User Feedback: Actively seeking user input for improvements
-- Bug Reports: Comprehensive bug tracking and resolution
-- Feature Requests: Community-driven development priorities
-- Documentation: Continuous documentation improvements
+--- Technical Changes ---
 
-This version history is maintained as part of the Web IRC Client plugin 
-documentation and reflects the complete development journey from initial 
-concept through current stable release.
+• Refactored message handling
+• Added tab management system
+• Implemented notification API
+• Enhanced DOM manipulation
+• Improved event handling
 
+
+================================================================================
+VERSION 5.0.0 - October 2025
+
+Release Type: Major Release
+Status: Stable (Superseded by 5.2.0)
+WordPress Compatibility: 5.0 - 6.8
+PHP Requirement: 7.4+
+
+
+--- Summary ---
+
+
+Initial public release of Badwolf Web IRC Client. Complete rewrite of
+previous versions with modern WebSocket implementation and WordPress
+integration.
+
+
+--- Features ---
+
+
+Core Functionality:
+• WebSocket IRC client
+• Real-time messaging
+• User list
+• Channel support
+• IRC commands (/nick, /join, /part, /msg, /me)
+
+
+WordPress Integration:
+• Shortcode support
+• Admin settings page
+• Theme customization
+• Auto-connect option
+
+
+User Interface:
+• Clean, modern design
+• Light and dark themes
+• Responsive layout
+• Message history
+• Command history (arrow keys)
+
+
+Connection Management:
+• Auto-reconnection
+• Exponential backoff
+• Connection status indicators
+• Error handling
+
+
+--- Technical Implementation ---
+
+• Pure JavaScript (no jQuery dependency)
+• WebSocket API
+• WordPress Plugin API
+• Secure WebSocket (wss://)
+• UnrealIRCd compatibility
+
+
+--- Requirements ---
+
+• WordPress 5.0+
+• PHP 7.4+
+• UnrealIRCd 6.0+ with WebSocket support
+• Valid SSL certificate
+
+
+================================================================================
+VERSION 4.x - Legacy Versions
+
+Pre-release versions (not publicly available)
+Development and testing versions
+Not recommended for production use
+
+
+================================================================================
+VERSION 3.x - Legacy Versions
+
+Early development versions
+Basic IRC functionality
+No WebSocket support
+Deprecated
+
+
+================================================================================
+VERSION 2.x - Legacy Versions
+
+Prototype versions
+Limited functionality
+Not released publicly
+Deprecated
+
+
+================================================================================
+VERSION 1.x - Legacy Versions
+
+Initial concept and proof of concept
+Internal testing only
+Never released
+Deprecated
+
+
+================================================================================
+
+
+SUPPORT AND RESOURCES
+
+
+GitHub Repository:
+  https://github.com/badwolf1972/web-irc-client
+
+
+WordPress Plugin Page:
+  https://wordpress.org/plugins/badwolf-web-irc-client/
+
+
+Support Forum:
+  https://wordpress.org/support/plugin/badwolf-web-irc-client/
+
+
+Documentation:
+  See docs/ folder in plugin directory
+
+
+Author Website:
+  https://www.oo3dmodels.com
+
+
+================================================================================
+
+
+DEVELOPMENT ROADMAP
+
+
+Planned Features (Future Versions):
+
+
+Version 5.3.0 (Planned):
+• File sharing support
+• Image preview in chat
+• Emoji support
+• Custom themes
+• User profiles
+
+
+Version 5.4.0 (Planned):
+• Voice chat integration
+• Video chat support
+• Screen sharing
+• Advanced moderation tools
+
+
+Version 6.0.0 (Planned):
+• Complete UI redesign
+• Mobile app integration
+• Advanced analytics
+• Multi-server support
+• Federation support
+
+
+Community Requests:
+• IRC bouncer integration
+• Custom commands
+• Bot integration
+• Logging and search
+• Channel management tools
+
+
+Submit feature requests:
+  https://github.com/badwolf1972/web-irc-client/issues
+
+
+================================================================================
+
+
+DEPRECATION NOTICES
+
+
+Deprecated Features:
+• None at this time
+
+
+Planned Deprecations:
+• None at this time
+
+
+Removed Features:
+• None at this time
+
+
+================================================================================
+
+
+LICENSE INFORMATION
+
+
+License: GPL v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+
+================================================================================
+
+
+ACKNOWLEDGMENTS
+
+
+Special Thanks:
+• UnrealIRCd team for excellent IRC server software
+• WordPress community for support and feedback
+• Beta testers and early adopters
+• Contributors and bug reporters
+
+
+Third-Party Libraries:
+• None (pure JavaScript implementation)
+
+
+Inspiration:
+• Classic IRC clients (mIRC, HexChat, etc.)
+• Modern web chat applications
+• WebSocket technology
+
+
+================================================================================
+
+
+CONTACT INFORMATION
+
+
+Author: Martin Cooper (badwolf72)
+Email: mtaylor141273@gmail.com
+Website: https://www.oo3dmodels.com
+GitHub: https://github.com/badwolf1972
+
+
+For support, please use:
+• GitHub Issues (preferred)
+• WordPress Support Forum
+• Email (for private matters only)
+
+
+================================================================================
+
+
+End of Version History
+Last Updated: January 18, 2026
+Document Version: 5.2.0

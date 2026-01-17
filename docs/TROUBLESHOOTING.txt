@@ -1,304 +1,1096 @@
-TROUBLESHOOTING GUIDE
-=====================
+=== Badwolf Web IRC Client - Troubleshooting Guide ===
 
-This guide helps you diagnose and fix common issues with the Web IRC Client plugin.
 
-COMMON ISSUES
-=============
+Version: 5.2.0
+Last Updated: January 18, 2026
 
-1. IRC Client Won't Connect
----------------------------
 
-Symptoms:
-- Status shows "Not connected"
-- No error messages in chat
-- WebSocket connection fails
+=== Table of Contents ===
 
-Diagnosis Steps:
+1. Connection Issues
+2. WordPress 6.9 Specific Issues
+3. SSL/TLS Certificate Problems
+4. WebSocket Errors
+5. Plugin Not Loading
+6. Performance Issues
+7. Browser Compatibility
+8. UnrealIRCd Server Issues
+9. Common Error Messages
+10. Debugging Tools and Techniques
 
-1. Check WebSocket URL
-   - Verify URL format: wss://hostname:port
-   - Test URL in browser developer tools
-   - Confirm server is running
 
-2. Test WebSocket Connection
-   Open browser console and test:
-   
-   const ws = new WebSocket('wss://your-irc-server.com:7443');
-   ws.onopen = () => console.log('Connected');
-   ws.onerror = (error) => console.log('Error:', error);
+================================================================================
+1. CONNECTION ISSUES
+================================================================================
 
-3. Check Browser Console
-   - Open Developer Tools (F12)
-   - Look for WebSocket errors
-   - Check for JavaScript errors
 
-Solutions:
-- Invalid URL: Correct the WebSocket URL in settings
-- Server Down: Restart your IRC server
-- SSL Issues: Verify SSL certificate validity
-- Firewall: Check firewall rules allow WebSocket connections
-- CORS Issues: Configure CORS headers on IRC server
+--- Problem: "Reconnecting..." Message Appears Constantly ---
 
-2. Channel Configuration Errors
--------------------------------
 
 Symptoms:
-- Error: "Channel is required and cannot be empty"
-- Can't save settings
-- Wrong channel joined
+• Status shows "Reconnecting in Xs... (attempt Y)"
+• Never successfully connects
+• WebSocket closes immediately after opening
+
 
 Solutions:
 
-1. Empty Channel
-   - Enter a channel name in admin settings
-   - Channel can be with or without # prefix
 
-2. Invalid Characters
-   - Use only letters, numbers, underscores, hyphens
-   - Avoid spaces and special characters
+A. Check UnrealIRCd is Running
 
-3. Channel Doesn't Exist
-   - Create channel on IRC server first
-   - Or use existing channel name
 
-3. Shortcode Not Displaying
----------------------------
+   ps aux | grep unrealircd
 
-Symptoms:
-- Shortcode appears as text: [web_irc_client]
-- No IRC client interface visible
-- Blank space where client should be
 
-Diagnosis:
+   If not running:
+   cd /home/unrealircd/unrealircd
+   ./unrealircd start
 
-1. Check Plugin Status
-   - Verify plugin is activated
-   - Check for plugin conflicts
 
-2. Verify Shortcode
-   - Correct spelling: [web_irc_client]
-   - No extra spaces or characters
+B. Verify Port is Listening
 
-3. Theme Compatibility
-   - Switch to default theme temporarily
-   - Check if theme blocks shortcodes
 
-Solutions:
-- Plugin Inactive: Activate the plugin
-- Shortcode Typo: Use exact spelling [web_irc_client]
-- Theme Conflict: Contact theme developer or use different theme
-- Plugin Conflict: Deactivate other plugins to identify conflict
+   sudo netstat -tlnp | grep 7443
 
-4. JavaScript Errors
---------------------
 
-Symptoms:
-- IRC client loads but doesn't function
-- Buttons don't work
-- Messages don't send
+   Should show:
+   tcp  0  0  0.0.0.0:7443  0.0.0.0:*  LISTEN  [PID]/unrealircd
 
-Diagnosis:
 
-1. Browser Console Errors
-   Common errors:
-   - "WebSocket is not defined"
-   - "Cannot read property of undefined"
-   - "Permission denied"
+C. Check Firewall
 
-2. Check JavaScript Loading
-   - Verify web-irc.js loads in Network tab
-   - Check for 404 errors on assets
 
-Solutions:
-- Script Not Loading: Check file permissions and paths
-- JavaScript Disabled: Enable JavaScript in browser
-- Browser Compatibility: Use modern browser with WebSocket support
-- Plugin Conflict: Deactivate conflicting plugins
+   sudo ufw status
 
-5. SSL/HTTPS Issues
--------------------
+
+   Ensure port 7443 is allowed:
+   sudo ufw allow 7443/tcp
+
+
+D. Test WebSocket Connection
+
+
+   Use: https://www.piesocket.com/websocket-tester
+   URL: wss://irc.yourdomain.com:7443
+
+
+   If fails, problem is server-side, not plugin.
+
+
+E. Check UnrealIRCd Logs
+
+
+   tail -50 /home/unrealircd/unrealircd/logs/ircd.log
+
+
+   Look for errors related to WebSocket or TLS.
+
+
+--- Problem: Connects Then Immediately Disconnects ---
+
 
 Symptoms:
-- Mixed content warnings
-- WebSocket connection blocked
-- "Insecure connection" errors
+• Shows "Connected" briefly
+• Then "Disconnected"
+• Error code 1006 in browser console
+
 
 Solutions:
 
-1. Use WSS Protocol
-   - Change ws:// to wss:// in settings
-   - Ensure IRC server has valid SSL certificate
 
-2. HTTPS WordPress Site
-   - Ensure WordPress site uses HTTPS
-   - Mixed content (HTTP/HTTPS) causes issues
+A. Check Browser Console for Errors
 
-3. Valid SSL Certificate
-   - Use proper SSL certificate on IRC server
-   - Avoid self-signed certificates in production
 
-6. Mobile/Responsive Issues
----------------------------
+   Press F12 → Console tab
+   Look for: "data.trim is not a function"
 
-Symptoms:
-- Interface doesn't fit mobile screen
-- Touch interactions don't work
-- Text too small or large
 
-Solutions:
+   Solution: Update to plugin version 5.2.0 which fixes this.
 
-1. Responsive Design
-   - Use percentage-based width: width="100%"
-   - Adjust height for mobile: height="50vh"
 
-2. Custom CSS
-   @media (max-width: 768px) {
-       #web-irc-container {
-           height: 400px !important;
-           font-size: 14px;
+B. Verify WebSocket Configuration
+
+
+   In unrealircd.conf, ensure:
+
+
+   listen {
+       ip *;
+       port 7443;
+       options {
+           tls;
+           websocket;  # Not websocket { type text; }
        }
    }
 
-7. Notification Issues
-----------------------
+
+C. Check SSL Certificate
+
+
+   cd /home/unrealircd/unrealircd
+   ./unrealircd restart
+
+
+   Look for certificate warnings in output.
+
+
+--- Problem: "Connection Failed" Error ---
+
 
 Symptoms:
-- No desktop notifications
-- Notifications not working in browser
+• Never gets past "Connecting..."
+• Browser console shows connection refused
+
 
 Solutions:
 
-1. Browser Permissions
-   - Allow notifications when prompted
-   - Check browser notification settings
 
-2. HTTPS Required
-   - Notifications require HTTPS
-   - Ensure site uses SSL certificate
+A. Verify WebSocket URL is Correct
 
-3. Browser Support
-   - Use modern browser with Notification API
-   - Some browsers block notifications by default
 
-DEBUGGING TOOLS
-===============
+   WordPress Admin → Settings → Badwolf Web IRC Client
+   Check: wss://irc.yourdomain.com:7443
 
-Enable Debug Mode:
-Add to WordPress wp-config.php:
 
+   Common mistakes:
+• Using http:// instead of wss://
+• Wrong port number
+• Typo in domain name
+
+
+B. Check DNS Resolution
+
+
+   nslookup irc.yourdomain.com
+
+
+   Should return your server's IP address.
+
+
+C. Test Direct Connection
+
+
+   telnet irc.yourdomain.com 7443
+
+
+   Should connect (then show garbled text).
+   If "Connection refused", port is not open.
+
+
+================================================================================
+2. WORDPRESS 6.9 SPECIFIC ISSUES
+================================================================================
+
+
+--- Problem: Plugin Stopped Working After WordPress 6.9 Update ---
+
+
+Symptoms:
+• IRC client interface doesn't appear
+• JavaScript not loading
+• Blank space where client should be
+
+
+Solutions:
+
+
+A. Update to Plugin Version 5.2.0
+
+
+   This version includes WordPress 6.9 compatibility fixes.
+
+
+   Download from:
+• WordPress.org plugin repository
+• GitHub: https://github.com/badwolf1972/web-irc-client
+
+
+B. Clear All Caches
+
+1. WordPress cache (if using caching plugin)
+2. Browser cache (Ctrl+Shift+R or Cmd+Shift+R)
+3. Server cache (if using Varnish, Redis, etc.)
+
+
+C. Verify Shortcode is Correct
+
+
+   [web_irc_client]
+
+
+   Not: [web-irc-client] or [webircclient]
+
+
+D. Check for JavaScript Errors
+
+
+   Press F12 → Console tab
+   Look for errors related to web-irc.js
+
+
+--- Problem: Configuration Not Being Passed to JavaScript ---
+
+
+Symptoms:
+• Client loads but shows "Not configured"
+• WebSocket URL shows "Not set"
+• Channel shows "None"
+
+
+Solutions:
+
+
+A. Verify Settings are Saved
+
+
+   WordPress Admin → Settings → Badwolf Web IRC Client
+   Click "Save Changes" even if no changes made.
+
+
+B. Check Browser Console
+
+
+   Press F12 → Console
+   Type: WEB_IRC_CLIENT_CFG
+
+
+   Should show your configuration object.
+   If undefined, plugin not loading correctly.
+
+
+C. Deactivate and Reactivate Plugin
+
+
+   WordPress Admin → Plugins
+   Deactivate "Badwolf Web IRC Client"
+   Activate it again
+
+
+================================================================================
+3. SSL/TLS CERTIFICATE PROBLEMS
+================================================================================
+
+
+--- Problem: Certificate Expired ---
+
+
+Symptoms:
+• UnrealIRCd logs show: "certificate expired"
+• WebSocket connection fails with SSL error
+• Browser shows security warning
+
+
+Solutions:
+
+
+A. Check Certificate Expiry
+
+
+   sudo certbot certificates
+
+
+   Look at "Expiry Date" for irc.yourdomain.com
+
+
+B. Renew Certificate
+
+
+   sudo certbot renew --force-renewal
+
+
+C. Copy to UnrealIRCd
+
+
+   sudo cp /etc/letsencrypt/live/irc.yourdomain.com/fullchain.pem /home/unrealircd/unrealircd/conf/tls/
+   sudo cp /etc/letsencrypt/live/irc.yourdomain.com/privkey.pem /home/unrealircd/unrealircd/conf/tls/
+   sudo chown unrealircd:unrealircd /home/unrealircd/unrealircd/conf/tls/*.pem
+   sudo chmod 600 /home/unrealircd/unrealircd/conf/tls/privkey.pem
+   sudo chmod 644 /home/unrealircd/unrealircd/conf/tls/fullchain.pem
+
+
+D. Restart UnrealIRCd
+
+
+   cd /home/unrealircd/unrealircd
+   ./unrealircd restart
+
+
+--- Problem: Certificate Not Trusted ---
+
+
+Symptoms:
+• Browser shows "NET::ERR_CERT_AUTHORITY_INVALID"
+• Self-signed certificate warning
+
+
+Solutions:
+
+
+A. Use Let's Encrypt Certificate
+
+
+   Self-signed certificates are not trusted by browsers.
+   Get a free Let's Encrypt certificate:
+
+
+   sudo certbot certonly --standalone -d irc.yourdomain.com
+
+
+B. Verify Certificate Chain
+
+
+   openssl s_client -connect irc.yourdomain.com:7443 -showcerts
+
+
+   Should show complete certificate chain.
+
+
+--- Problem: Wrong Certificate Being Used ---
+
+
+Symptoms:
+• Certificate is for different domain
+• Certificate is valid but connection fails
+
+
+Solutions:
+
+
+A. Check Certificate Paths in UnrealIRCd Config
+
+
+   nano /home/unrealircd/unrealircd/conf/unrealircd.conf
+
+
+   Verify paths in tls-options block:
+   certificate "/home/unrealircd/unrealircd/conf/tls/fullchain.pem";
+   key "/home/unrealircd/unrealircd/conf/tls/privkey.pem";
+
+
+B. Verify Certificate Files
+
+
+   ls -la /home/unrealircd/unrealircd/conf/tls/
+
+
+   Check file dates and sizes.
+
+
+C. Test Certificate
+
+
+   openssl x509 -in /home/unrealircd/unrealircd/conf/tls/fullchain.pem -text -noout
+
+
+   Check "Subject" and "Issuer" fields.
+
+
+================================================================================
+4. WEBSOCKET ERRORS
+================================================================================
+
+
+--- Error Code 1006: Abnormal Closure ---
+
+
+Causes:
+• Server closed connection unexpectedly
+• SSL/TLS handshake failed
+• Binary data handling issue
+
+
+Solutions:
+
+
+A. Update to Plugin Version 5.2.0
+
+
+   Includes fix for binary WebSocket data handling.
+
+
+B. Check UnrealIRCd Logs
+
+
+   tail -f /home/unrealircd/unrealircd/logs/ircd.log
+
+
+   Look for errors when connection attempts occur.
+
+
+C. Verify WebSocket Module is Loaded
+
+
+   In unrealircd.conf:
+   loadmodule "websocket";
+
+
+D. Check Browser Console
+
+
+   Look for: "data.trim is not a function"
+   This indicates binary data issue (fixed in 5.2.0)
+
+
+--- Error Code 1000: Normal Closure ---
+
+
+This is normal when:
+• User closes browser tab
+• User navigates away from page
+• Intentional disconnect
+
+
+No action needed.
+
+
+--- Error Code 1001: Going Away ---
+
+
+Causes:
+• Server is shutting down
+• Server is restarting
+
+
+Solutions:
+
+
+A. Check if UnrealIRCd is Running
+
+
+   ps aux | grep unrealircd
+
+
+B. Check Server Logs
+
+
+   tail -50 /home/unrealircd/unrealircd/logs/ircd.log
+
+
+--- Error: "WebSocket connection failed" ---
+
+
+Causes:
+• Port blocked by firewall
+• DNS not resolving
+• Server not listening
+
+
+Solutions:
+
+
+A. Test Port Accessibility
+
+
+   telnet irc.yourdomain.com 7443
+
+
+   Should connect.
+
+
+B. Check Firewall
+
+
+   sudo ufw status
+   sudo iptables -L -n | grep 7443
+
+
+C. Verify DNS
+
+
+   nslookup irc.yourdomain.com
+   ping irc.yourdomain.com
+
+
+================================================================================
+5. PLUGIN NOT LOADING
+================================================================================
+
+
+--- Problem: IRC Client Interface Not Appearing ---
+
+
+Symptoms:
+• Shortcode shows as plain text
+• Blank space where client should be
+• No HTML output
+
+
+Solutions:
+
+
+A. Verify Plugin is Activated
+
+
+   WordPress Admin → Plugins
+   "Badwolf Web IRC Client" should show "Deactivate" link.
+
+
+B. Check Shortcode Syntax
+
+
+   Correct: [web_irc_client]
+   Wrong: [web-irc-client] or [webircclient]
+
+
+C. Clear WordPress Cache
+
+
+   If using caching plugin (WP Super Cache, W3 Total Cache, etc.):
+• Clear cache
+• Purge all caches
+
+
+D. Check for Plugin Conflicts
+
+
+   Deactivate other plugins one by one to identify conflicts.
+
+
+E. Check PHP Error Log
+
+
+   Look for PHP errors:
+   tail -50 /var/log/apache2/error.log
+
+or
+
+   tail -50 /var/log/nginx/error.log
+
+
+--- Problem: JavaScript Not Loading ---
+
+
+Symptoms:
+• HTML appears but no functionality
+• Browser console shows 404 for web-irc.js
+
+
+Solutions:
+
+
+A. Verify File Exists
+
+
+   ls -la /var/www/html/wp-content/plugins/badwolf-web-irc-client/assets/web-irc.js
+
+
+B. Check File Permissions
+
+
+   chmod 644 /var/www/html/wp-content/plugins/badwolf-web-irc-client/assets/web-irc.js
+
+
+C. Clear Browser Cache
+
+
+   Hard refresh: Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
+
+
+D. Check for JavaScript Errors
+
+
+   Press F12 → Console tab
+   Look for loading errors
+
+
+--- Problem: CSS Not Loading ---
+
+
+Symptoms:
+• Client appears but looks broken
+• No styling applied
+
+
+Solutions:
+
+
+A. Verify CSS File Exists
+
+
+   ls -la /var/www/html/wp-content/plugins/badwolf-web-irc-client/assets/web-irc.css
+
+
+B. Check File Permissions
+
+
+   chmod 644 /var/www/html/wp-content/plugins/badwolf-web-irc-client/assets/web-irc.css
+
+
+C. Clear Browser Cache
+
+
+   Hard refresh: Ctrl+Shift+R
+
+
+D. Check for CSS Conflicts
+
+
+   Press F12 → Elements tab
+   Inspect IRC client elements
+   Look for conflicting styles from theme
+
+
+================================================================================
+6. PERFORMANCE ISSUES
+================================================================================
+
+
+--- Problem: Slow Connection ---
+
+
+Symptoms:
+• Takes long time to connect
+• Messages delayed
+• Laggy interface
+
+
+Solutions:
+
+
+A. Check Server Resources
+
+
+   top
+
+
+   Look for high CPU or memory usage.
+
+
+B. Check Network Latency
+
+
+   ping irc.yourdomain.com
+
+
+   Should be < 100ms for good performance.
+
+
+C. Optimize UnrealIRCd
+
+
+   In unrealircd.conf:
+
+
+   set {
+       anti-flood {
+           # Adjust these values
+       }
+   }
+
+
+D. Check Browser Performance
+
+
+   Press F12 → Performance tab
+   Record and analyze
+
+
+--- Problem: High Memory Usage ---
+
+
+Symptoms:
+• Browser tab uses lots of memory
+• Browser becomes slow
+
+
+Solutions:
+
+
+A. Limit Message History
+
+
+   In web-irc.js, adjust:
+   messageLimit: 500  // Reduce this number
+
+
+B. Close Unused Tabs
+
+
+   Each PM window uses memory.
+
+
+C. Restart Browser
+
+
+   Close and reopen browser to clear memory.
+
+
+================================================================================
+7. BROWSER COMPATIBILITY
+================================================================================
+
+
+--- Problem: Not Working in Specific Browser ---
+
+
+Solutions:
+
+
+A. Check Browser Version
+
+
+   Minimum versions:
+• Chrome 16+
+• Firefox 11+
+• Safari 7+
+• Edge 12+
+
+
+B. Enable JavaScript
+
+
+   Ensure JavaScript is enabled in browser settings.
+
+
+C. Check for Browser Extensions
+
+
+   Disable ad blockers and privacy extensions.
+   Test in incognito/private mode.
+
+
+D. Check Console for Errors
+
+
+   Press F12 → Console
+   Look for compatibility errors
+
+
+--- Problem: Not Working on Mobile ---
+
+
+Solutions:
+
+
+A. Test in Mobile Browser
+
+
+   Use Chrome or Safari on mobile.
+
+
+B. Check Viewport Settings
+
+
+   Ensure page is mobile-responsive.
+
+
+C. Test WebSocket on Mobile
+
+
+   Use mobile WebSocket testing app.
+
+
+================================================================================
+8. UNREALIRCD SERVER ISSUES
+================================================================================
+
+
+--- Problem: UnrealIRCd Won't Start ---
+
+
+Solutions:
+
+
+A. Check Configuration
+
+
+   cd /home/unrealircd/unrealircd
+   ./unrealircd configtest
+
+
+   Fix any errors shown.
+
+
+B. Check Logs
+
+
+   tail -50 /home/unrealircd/unrealircd/logs/ircd.log
+
+
+C. Check Port Conflicts
+
+
+   sudo netstat -tlnp | grep 7443
+
+
+   If another process is using the port, stop it.
+
+
+D. Check Permissions
+
+
+   ls -la /home/unrealircd/unrealircd/
+
+
+   Ensure unrealircd user owns files.
+
+
+--- Problem: WebSocket Module Not Loading ---
+
+
+Solutions:
+
+
+A. Verify Module Exists
+
+
+   ls -la /home/unrealircd/unrealircd/modules/websocket.so
+
+
+B. Check Module Load in Config
+
+
+   grep "loadmodule.*websocket" /home/unrealircd/unrealircd/conf/unrealircd.conf
+
+
+   Should show: loadmodule "websocket";
+
+
+C. Recompile UnrealIRCd
+
+
+   cd /home/unrealircd/unrealircd-source
+   ./Config
+   make clean
+   make
+   make install
+
+
+--- Problem: Users Can't Join Channel ---
+
+
+Solutions:
+
+
+A. Check Channel Modes
+
+
+   /mode #channel
+
+
+   Remove restrictive modes if needed.
+
+
+B. Check Ban Lists
+
+
+   /mode #channel +b
+
+
+   Remove any bans affecting users.
+
+
+C. Check Channel Limits
+
+
+   /mode #channel +l
+
+
+   Increase limit if needed.
+
+
+================================================================================
+9. COMMON ERROR MESSAGES
+================================================================================
+
+
+--- "Error: No channel configured" ---
+
+
+Solution:
+WordPress Admin → Settings → Badwolf Web IRC Client
+Set "Default Channel" field (e.g., #general)
+
+
+--- "Error: No WebSocket URL configured" ---
+
+
+Solution:
+WordPress Admin → Settings → Badwolf Web IRC Client
+Set "WebSocket URL" field (e.g., wss://irc.yourdomain.com:7443)
+
+
+--- "Connection error" ---
+
+
+Causes:
+• Server not reachable
+• Firewall blocking
+• DNS not resolving
+
+
+Solutions: See "Connection Issues" section above.
+
+
+--- "Max reconnection attempts reached" ---
+
+
+Causes:
+• Server persistently unavailable
+• Configuration error
+
+
+Solutions:
+1. Check UnrealIRCd is running
+2. Verify WebSocket URL is correct
+3. Check firewall rules
+4. Refresh page to reset attempts
+
+
+--- "Invalid nickname" ---
+
+
+Causes:
+• Nickname contains invalid characters
+• Nickname too long (>30 characters)
+
+
+Solutions:
+Use only: a-z, A-Z, 0-9, _, -, [, ], \, `, ^, {, }, |
+
+
+--- "Certificate expired" ---
+
+
+Solution: See "SSL/TLS Certificate Problems" section above.
+
+
+================================================================================
+10. DEBUGGING TOOLS AND TECHNIQUES
+================================================================================
+
+
+--- Browser Developer Tools ---
+
+
+Chrome/Firefox/Edge:
+Press F12 or Right-click → Inspect
+
+
+Useful tabs:
+• Console: JavaScript errors and logs
+• Network: WebSocket connection details
+• Elements: HTML structure and CSS
+
+
+--- WebSocket Testing Tools ---
+
+
+Online testers:
+• https://www.piesocket.com/websocket-tester
+• https://www.websocket.org/echo.html
+
+
+Usage:
+1. Enter: wss://irc.yourdomain.com:7443
+2. Click Connect
+3. Check connection status
+
+
+--- UnrealIRCd Debugging ---
+
+
+Enable debug mode:
+./unrealircd -d
+
+
+View real-time logs:
+tail -f /home/unrealircd/unrealircd/logs/ircd.log
+
+
+Test configuration:
+./unrealircd configtest
+
+
+--- Network Debugging ---
+
+
+Test DNS:
+nslookup irc.yourdomain.com
+dig irc.yourdomain.com
+
+
+Test connectivity:
+ping irc.yourdomain.com
+telnet irc.yourdomain.com 7443
+
+
+Test SSL:
+openssl s_client -connect irc.yourdomain.com:7443
+
+
+Check ports:
+sudo netstat -tlnp | grep 7443
+sudo ss -tlnp | grep 7443
+
+
+--- WordPress Debugging ---
+
+
+Enable WordPress debug mode:
+
+
+Edit wp-config.php:
 define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true);
 define('WP_DEBUG_DISPLAY', false);
 
-Browser Developer Tools:
-1. Console Tab: JavaScript errors and logs
-2. Network Tab: WebSocket connection status
-3. Application Tab: Local storage and session data
 
-IRC Server Logs:
-Check your IRC server logs for:
-- WebSocket connection attempts
-- Authentication failures
-- Channel join/part messages
+Check debug log:
+tail -f /var/www/html/wp-content/debug.log
 
-WordPress Debug Log:
-Check /wp-content/debug.log for:
-- PHP errors
-- Plugin conflicts
-- Database issues
 
-PERFORMANCE ISSUES
-==================
+--- Plugin Debugging ---
 
-Slow Loading:
 
-1. Optimize Assets
-   - Enable asset minification
-   - Use CDN for static files
+Check if plugin is loaded:
+WordPress Admin → Plugins
+Verify "Badwolf Web IRC Client" is active
 
-2. Reduce Reconnection Attempts
-   - Adjust reconnection settings
-   - Implement exponential backoff
 
-High Memory Usage:
+Check plugin files:
+ls -la /var/www/html/wp-content/plugins/badwolf-web-irc-client/
 
-1. Message History Limit
-   - Limit stored message history
-   - Clear old messages periodically
 
-2. Connection Management
-   - Close unused connections
-   - Implement proper cleanup
+Check JavaScript console:
+Type: WebIRCClient
+Should show object with methods
 
-ADVANCED TROUBLESHOOTING
-========================
 
-Database Issues:
+--- Logging Connection Attempts ---
 
--- Check plugin options
-SELECT * FROM wp_options WHERE option_name LIKE 'web_irc_%';
 
--- Reset plugin settings
-DELETE FROM wp_options WHERE option_name LIKE 'web_irc_%';
+In browser console, watch for:
+🔌 Connecting to: wss://...
+✅ WebSocket connected
+📨 Raw data: ...
+📊 Status: Connected
 
-File Permission Issues:
 
-# Set correct permissions
-find /wp-content/plugins/web-irc-client -type f -exec chmod 644 {} \;
-find /wp-content/plugins/web-irc-client -type d -exec chmod 755 {} \;
+These logs help identify where connection fails.
 
-Plugin Conflicts:
-1. Deactivate All Plugins
-2. Activate Web IRC Client Only
-3. Test Functionality
-4. Reactivate Plugins One by One
-5. Identify Conflicting Plugin
 
-GETTING HELP
-=============
+================================================================================
 
-Before Contacting Support:
-1. Check this troubleshooting guide
-2. Review configuration settings
-3. Test with default theme
-4. Disable other plugins temporarily
-5. Check browser console for errors
 
-Information to Include:
-When contacting support, provide:
-- WordPress version
-- Plugin version
-- PHP version
-- Browser and version
-- IRC server type (UnrealIRCd, etc.)
-- Error messages (exact text)
-- Steps to reproduce issue
-- Browser console errors
+Still Having Issues?
 
-Contact Information:
-- Email: mtaylor141273@gmail.com
-- Subject: Web IRC Client Support - [Brief Description]
+1. Check GitHub Issues:
+https://github.com/badwolf1972/web-irc-client/issues
 
-Self-Help Resources:
-- Plugin documentation in /docs/ folder
-- WordPress Codex for general WordPress issues
-- IRC server documentation for server-specific issues
-- Browser documentation for WebSocket support
+2. WordPress Support Forum:
+https://wordpress.org/support/plugin/badwolf-web-irc-client/
 
-PREVENTION TIPS
-===============
+3. UnrealIRCd Support:
+irc.unrealircd.org #unreal-support
 
-Regular Maintenance:
-1. Keep Plugin Updated
-2. Monitor Server Logs
-3. Test After WordPress Updates
-4. Backup Configuration Settings
 
-Best Practices:
-1. Use HTTPS/WSS in Production
-2. Monitor Resource Usage
-3. Implement Proper Error Handling
-4. Test on Multiple Browsers
-5. Document Custom Configurations
-
+When asking for help, provide:
+• Plugin version
+• WordPress version
+• PHP version
+• UnrealIRCd version
+• Browser and version
+• Error messages from browser console
+• Relevant log entries
+• Steps to reproduce the issue

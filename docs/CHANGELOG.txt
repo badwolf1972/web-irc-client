@@ -98,3 +98,78 @@ From v5.0 to v5.1:
 - Action Required: Must configure channel settings (no defaults provided)
 - Compatibility: Fully backward compatible with v5.0 configurations
 
+=== Badwolf Web IRC Client - Changelog ===
+
+
+= 5.2.0 - January 18, 2026 =
+
+
+** Fixed **
+• WordPress 6.9 Compatibility - Fixed script enqueueing issues that prevented plugin from loading
+• Improved shortcode detection to work with block themes and Full Site Editing (FSE)
+• Added multi-method shortcode detection (global $post, $wp_query, and post meta)
+• Fixed wp_localize_script() timing to ensure configuration is passed correctly to JavaScript
+• WebSocket Connection - Added IRC WebSocket subprotocol support for UnrealIRCd compatibility
+• Fixed binary WebSocket data handling (Blob to text conversion)
+• Resolved connection drops caused by improper data type handling
+• SSL/TLS Certificate - Updated documentation for proper Let's Encrypt certificate configuration
+
+
+** Added **
+• Settings link in plugin list page for easier access to configuration
+• Enhanced error handling and WebSocket error logging
+• Fallback script loading in shortcode handler to ensure scripts load even if detection fails
+• Comprehensive troubleshooting documentation
+• Auto-renewal setup instructions for SSL certificates
+
+
+** Changed **
+• Updated "Tested up to" WordPress version to 6.9
+• Improved configuration validation and error messages
+• Enhanced documentation with detailed troubleshooting guides
+• Improved connection state management and reconnection logic
+
+
+** Technical Details **
+• Fixed has_shortcode() detection in WordPress 6.9 environments
+• Added support for binary WebSocket messages via FileReader API
+• Improved script registration and enqueueing workflow
+• Added proper plugin action links filter
+• Enhanced WebSocket message handling with type checking
+
+
+= 5.1.1 - Previous Release =
+
+
+** Features **
+• Real-time IRC chat via WebSocket
+• Private messaging support
+• Desktop notifications
+• Multiple channel support
+• Tab-based interface
+• User list with context menus
+• Command history (arrow keys)
+• Auto-reconnection with exponential backoff
+• Customizable themes (light/dark)
+• IRC commands support (/nick, /join, /part, /msg, /me)
+• Tab completion for nicknames
+• Unread message badges
+• Message history (500 messages per channel)
+
+
+= 5.1.0 =
+• Initial public release
+• WebSocket IRC client implementation
+• Basic IRC functionality
+• Theme support
+
+
+=== Upgrade Notice ===
+
+
+= 5.2.0 =
+Critical update for WordPress 6.9 users. Fixes connection issues and adds WebSocket stability improvements. Update recommended for all users.
+
+
+= 5.1.1 =
+Maintenance release with bug fixes and performance improvements.
