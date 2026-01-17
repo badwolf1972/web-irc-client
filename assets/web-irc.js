@@ -1,12 +1,13 @@
 /**
- * Web IRC Client v5.1 - Enhanced with Private Messaging & Notifications
+ * Web IRC Client v5.2 - Enhanced with Private Messaging & Notifications
  * Modern IRC web client with real-time chat, private messaging, and notifications
+ * FIXED: Added IRC WebSocket subprotocol support for UnrealIRCd
  */
 
 (function(){
   'use strict';
 
-  console.log('🚀 Web IRC Client v5.1 Loading...', new Date().toISOString());
+  console.log('🚀 Web IRC Client v5.2 Loading...', new Date().toISOString());
 
   // Configuration from WordPress
   var cfg = (typeof window !== 'undefined' && window.WEB_IRC_CLIENT_CFG) ? window.WEB_IRC_CLIENT_CFG : {};
@@ -88,7 +89,7 @@
     // Set initial values
     if (elWsUrl) elWsUrl.textContent = config.wsURL;
     if (elChannel) elChannel.textContent = config.channel;
-    if (elVersion) elVersion.textContent = 'v5.1';
+    if (elVersion) elVersion.textContent = 'v5.2';
 
     // Create tab system
     createTabSystem();
@@ -465,7 +466,9 @@
     setStatus('Connecting...');
     
     try {
-      ws = new WebSocket(config.wsURL);
+      // CRITICAL FIX: Add IRC WebSocket subprotocol for UnrealIRCd compatibility
+      // UnrealIRCd expects either 'irc' or 'binary.ircv3.net' subprotocol
+      ws = new WebSocket(config.wsURL, ['irc', 'binary.ircv3.net']);
     } catch (e) {
       console.error('❌ WebSocket creation failed:', e);
       setStatus('Connection failed: ' + e.message);
@@ -521,7 +524,7 @@
 
   function sendRaw(message) {
     if (!connected || !ws) {
-      console.warn('⚠️ Cannot send message: not connected');
+      console.warn('⚠ Cannot send message: not connected');
       return false;
     }
     
@@ -634,6 +637,16 @@
 
 
   function handleMessage(data) {
+    // Handle Blob data (binary WebSocket)
+    if (data instanceof Blob) {
+        var reader = new FileReader();
+        reader.onload = function() {
+            handleMessage(reader.result); // Recursively call with text
+        };
+        reader.readAsText(data);
+        return;
+    }
+    
     console.log('📨 Raw data:', data);
 
     var lines = data.trim().split(/\r?\n/);
@@ -893,7 +906,7 @@
       li.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log('🖱️ Clicked user:', u);
+        console.log('🖱 Clicked user:', u);
         showUserMenu(e, u);
       });
       
@@ -964,7 +977,7 @@
     setTimeout(function() {
       function closeMenu(e) {
         if (!menu.contains(e.target)) {
-          console.log('🗑️ Closing menu (clicked outside)');
+          console.log('🗑 Closing menu (clicked outside)');
           menu.remove();
           document.removeEventListener('click', closeMenu);
         }
@@ -1030,7 +1043,7 @@
         notification.close();
       };
     } catch (e) {
-      console.warn('⚠️ Notification failed:', e);
+      console.warn('⚠ Notification failed:', e);
     }
   }
 
@@ -1046,7 +1059,6 @@
     isConnected: function() { return connected; }
   };
 
-  console.log('✅ Web IRC Client v5.1 loaded successfully');
+  console.log('✅ Web IRC Client v5.2 loaded successfully');
 
 })();
-
